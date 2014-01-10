@@ -122,9 +122,9 @@ public class SchemaVCHDR extends Schemas  {
      
         final CellProcessor[] processors = new CellProcessor[] { 
                 new Optional(),
-                new Optional(),   
+                new Optional(new FmtDate("YYYY-MM-dd")),   
                 new Optional(),
-                new Optional(new FmtDate("YYYY-MM-dd")),
+                new Optional(),
                 new Optional(), 
                 new Optional(new FmtDate("YYYY-MM-dd")),
                 new Optional(),
@@ -137,7 +137,7 @@ public class SchemaVCHDR extends Schemas  {
                 new Optional(),
                 new Optional(),
                 new Optional(),
-                new Optional(),
+                new Optional(new FmtDate("YYYY-MM-dd")),
                 new Optional(),
                 new Optional(),
                 new Optional(),

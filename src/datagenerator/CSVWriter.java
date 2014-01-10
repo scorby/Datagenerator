@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 import java.util.Random;
+import org.supercsv.io.CsvMapWriter;
 import schemas.Schemas;
 
 /**
@@ -35,7 +35,7 @@ public class CSVWriter {
     private Long tempSize = 0l;
     private Long overallSize = 0l;
     private static final Random random = new Random(93285);
-    private List<Object> csvList = new ArrayList<>();
+    private Map<String, Object> csvMap = new HashMap<>();
     private boolean isDone = false;
 
     public CSVWriter(Schemas schema, String path, Integer maxSize, Integer maxFileSize, Integer splitFileAtSize, Integer maxRows) {
@@ -80,7 +80,7 @@ public class CSVWriter {
                 pathName = this.path + "/" + fileName;
                 this.tempSize = this.tempSize + schema.fHeader.length();
                 this.close(schema);
-                schema.listWriter = new CsvListWriter(new FileWriter(pathName),CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
+                schema.mapWriter = new CsvMapWriter(new FileWriter(pathName),CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
                 schema.fHeader = new File(pathName);
                 schema.headerWritten = false;
                 schema.setCurrentRow(0);
@@ -88,7 +88,7 @@ public class CSVWriter {
                 this.writeHeader(schema);
             }  
         } else {
-            schema.listWriter = new CsvListWriter(new FileWriter(pathName),CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
+            schema.mapWriter = new CsvMapWriter(new FileWriter(pathName),CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
             schema.fHeader = new File(pathName);
             schema.headerWritten = false;
             schema.setFileName(schema.getName() + ".csv");
@@ -100,7 +100,7 @@ public class CSVWriter {
 
         //write Header
         if(!schema.headerWritten) {
-            schema.listWriter.writeHeader(schema.getHeader());
+            schema.mapWriter.writeHeader(schema.getHeader());
             schema.headerWritten = true;
         }
         
@@ -115,9 +115,12 @@ public class CSVWriter {
             if(!this.checkConstraints(schema)) {
                 return;
             }
-            this.csvList = schema.getData();
-            if(this.csvList != null) { 
-                schema.listWriter.write(this.csvList, schema.getProcessors());
+            this.csvMap = schema.getData();
+           
+            if(this.csvMap != null) { 
+                schema.mapWriter.write(this.csvMap, schema.getHeader(), schema.getProcessors());
+               
+                //schema.mapWriter.write(this.csvList, schema.getProcessors());
                 schema.setCurrentRow();
                 this.setOverallSize();
                 this.currentRows++;
@@ -144,15 +147,15 @@ public class CSVWriter {
     }
     
     private void close(Schemas schema) throws Exception {
-        if(schema.listWriter != null) {
-            schema.listWriter.close();
+        if(schema.mapWriter != null) {
+            schema.mapWriter.close();
         }
     }
     
     private void close() throws Exception {
         for(Schemas s:this.schemas) {
-            if(s.listWriter != null) {
-                s.listWriter.close();
+            if(s.mapWriter != null) {
+                s.mapWriter.close();
             }
         }
     }

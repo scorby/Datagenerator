@@ -18,7 +18,7 @@ import org.supercsv.prefs.CsvPreference;
 	
 public class DefaultSAPMasterDataValues implements SAPMasterDataValues {
         
-        private static final String path = "./sapmd";
+        private static final String path = "./csvSources/sapmd";
         private static List<String> docType;
         private static List<String> compCode;
         private static List<String> custGrp;

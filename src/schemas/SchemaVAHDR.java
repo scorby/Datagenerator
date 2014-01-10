@@ -7,12 +7,19 @@ package schemas;
  */
 
 import datagenerator.DataGenerator;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.supercsv.cellprocessor.*;
 import org.supercsv.cellprocessor.ift.*;
 import org.supercsv.cellprocessor.constraint.*;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.io.ICsvListReader;
+import org.supercsv.prefs.CsvPreference;
 /**
  *
  * @author Martin Kleehaus
@@ -28,90 +35,50 @@ public class SchemaVAHDR extends Schemas  {
     }
     
     @Override
-    public String[] getHeader() {
-        final String[] header = new String[] { 
-            "DOC_NUMBER", 
-            "QUOT_FROM", 
-            "DOC_TYPE",
-            "ORD_REASON",
-            "QUOT_TO",
-            "COMP_CODE", 
-            "BILL_BLOCK",
-            "LOC_CURRCY",
-            "SOLD_TO",
-            "RATE_TYPE",
-            "GN_CUSTOM",
-            "CUST_GRP1",
-            "CUST_GRP2",
-            "CUST_GRP3",
-            "CUST_GRP4",
-            "CUST_GRP5",
-            "DEL_BLOCK",
-            "STAT_CURR",
-            "DOC_CATEG",
-            "DOC_CATEGR",
-            "SALES_OFF",
-            "SALES_GRP",
-            "SALESORG",
-            "DISTR_CHAN",
-            "CREATEDON",
-            "DOC_CURRCY",
-            "SALESEMPLY",
-            "DIV_HEAD",
-            "REQ_DATE",
-            "FISCVARNT",
-            "ORDERS"};
-        
-        return header;
-    }
-    
-    @Override
-    public List<Object> getData() throws Exception {
+    public Map<String, Object> getData() throws Exception{
         DataGenerator dg = DataGenerator.getInstance();
         String[] rType = {"KZ","M"};
         String[] cGrp = {"102","103","104","106"};
         String[] cGrp2 = {"1","2","3"};
         String[] dCateg = {"B", "C", "G", "H", "L"};
+        int cnt = 0;
         
-        final List<Object> csvList;
-        csvList = Arrays.asList(new Object[] {
-            this.getNextPrimaryKey(),
-            this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),1,80),
-            this.getLastListValue(dg.getDocType(),2,50),
-            this.getLastListValue(dg.getOrdReason(),3,50),
-            dg.getDate(9999, 12, 31),
-            this.getLastListValue(dg.getCompCode(),5,50),
-            "G" + dg.getNumberBetween(0, 1),
-            this.getLastListValue(dg.getLocCurrency(),7,90),
-            this.getLastListValue(dg.getNumberBetween(1030040600, 1090000000),8,80),
-            dg.getItem(rType, 25),
-            this.getLastListValue(dg.getBusinessName().replaceAll(" ", "").toUpperCase(),10,85),
-            dg.getItem(cGrp, 25),
-            dg.getItem(cGrp2, 10),
-            dg.getItem(dg.getCustGrp(),10,null),
-            "",
-            "",
-            dg.getItem("ZG", 10,null),
-            this.getLastListValue(dg.getLocCurrency(),7,90),
-            dg.getItem(dCateg),
-            "",
-            dg.getSalesOff(),
-            dg.getItem("2" + Integer.toString(dg.getNumberBetween(0, 13)), 40,null),
-            this.getLastListValue(dg.getSalesOrg(),22,70),
-            "1",
-            this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),24,80),
-            this.getListItem(7),
-            this.getLastListValue(dg.getNumberBetween(50000, 60000),26,80),
-            this.getLastListValue(dg.getRandomChar() + "0",27,80).toString().toUpperCase(),
-            this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),28,80),
-            "K4",
-            dg.getNumberBetween(1, 9)
-                //dg.getFirstName(), dg.getLastName(),dg.getAddress(), dg.getBirthDate(), dg.getEmailAddress(), dg.getBoolean(), dg.getCurrency(100, 10000), dg.getRandomText(10,100)});
-        });
+        Map<String, Object> columns = new HashMap<>();        
+        columns.put(this.getHeader()[cnt++],this.getNextPrimaryKey());
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),this.getHeader()[cnt - 1],80));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDocType(),this.getHeader()[cnt - 1],50));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getOrdReason(),this.getHeader()[cnt - 1],50));
+        columns.put(this.getHeader()[cnt++],dg.getDate(9999, 12, 31));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getCompCode(),this.getHeader()[cnt - 1],50));
+        columns.put(this.getHeader()[cnt++],"G" + dg.getNumberBetween(0, 1));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),this.getHeader()[cnt - 1],90));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(1030040600, 1090000000),this.getHeader()[cnt - 1],80));
+        columns.put(this.getHeader()[cnt++],dg.getItem(rType, 25));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getBusinessName().replaceAll(" ", "").toUpperCase(),this.getHeader()[cnt - 1],85));
+        columns.put(this.getHeader()[cnt++],dg.getItem(cGrp, 25));
+        columns.put(this.getHeader()[cnt++],dg.getItem(cGrp2, 10));
+        columns.put(this.getHeader()[cnt++],dg.getItem(dg.getCustGrp(),10,null));
+        columns.put(this.getHeader()[cnt++],"");
+        columns.put(this.getHeader()[cnt++],"");
+        columns.put(this.getHeader()[cnt++],dg.getItem("ZG", 10,null));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),this.getHeader()[cnt - 1],90));
+        columns.put(this.getHeader()[cnt++],dg.getItem(dCateg));
+        columns.put(this.getHeader()[cnt++],"");
+        columns.put(this.getHeader()[cnt++],dg.getSalesOff());
+        columns.put(this.getHeader()[cnt++],dg.getItem("2" + Integer.toString(dg.getNumberBetween(0, 13)), 40,null));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getSalesOrg(),this.getHeader()[cnt - 1],70));
+        columns.put(this.getHeader()[cnt++],"1");
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),this.getHeader()[cnt - 1],80));
+        columns.put(this.getHeader()[cnt++],this.getMapItem("LOC_CURRCY"));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(50000, 60000),this.getHeader()[cnt - 1],80));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getRandomChar() + "0",this.getHeader()[cnt - 1],80).toString().toUpperCase());
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),this.getHeader()[cnt - 1],80));
+        columns.put(this.getHeader()[cnt++],"K4");
+        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 9));
         
-        this.setList(csvList);
+        this.setMap(columns);
         
-        return csvList;
+        return columns;
     }
     
     @Override

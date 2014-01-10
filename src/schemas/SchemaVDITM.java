@@ -10,6 +10,7 @@ import datagenerator.DataGenerator;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.supercsv.cellprocessor.*;
 import org.supercsv.cellprocessor.ift.*;
@@ -136,7 +137,7 @@ public class SchemaVDITM extends Schemas {
     }   
     
     @Override
-    public List<Object> getData() throws Exception {
+    public Map<String, Object> getData() throws Exception{
         DataGenerator dg = DataGenerator.getInstance();
         
         //Definition of MasterData
@@ -150,7 +151,7 @@ public class SchemaVDITM extends Schemas {
         String[] matlgrp5 = {"702","B01","B04","B10","B11"};
         String[] costArea = {"C01","C02","C03","C04","C05"};
         
-        if(this.getParentSchema(0).getListItem(0) != this.getListItem(67)) {
+        if(this.getParentSchema(0).getMapItem("DOC_NUMBER") != this.getMapItem("REFER_DOC")) {
             this.setPrimaryKey(this.getDefaultPrimaryKey());
             if(this.getForeignKey() == null) {
                 this.setForeignKey(140500);
@@ -185,7 +186,7 @@ public class SchemaVDITM extends Schemas {
             "S0",
             null,
             this.getParentSchema(0).getListItem(16),
-            "CCROUP" + dg.getNumberBetween(1, 12).toString(),
+            this.getParentSchema(0).getListItem(17),
             dg.getItem(cGrp, 25),
             dg.getItem(cGrp2, 10),
             dg.getItem(dg.getCustGrp(),10,null),
@@ -234,27 +235,27 @@ public class SchemaVDITM extends Schemas {
             dg.getNumberBetween(1, 1000),
             null, //70
             null, 
-            this.getParentSchema(0).getListItem(82), //Sales Emply
-            this.getParentSchema(0).getListItem(27), //Sales Org
+            this.getParentSchema(0).getListItem(83), //Sales Emply
+            this.getParentSchema(0).getListItem(28), //Sales Org
             "1",
-            this.getParentSchema(0).getListItem(26),
+            this.getParentSchema(0).getListItem(27),
             this.getLastListValue("OF" + dg.getNumberBetween(1, 12).toString(),76,80),
             null,
             dg.getNumberBetween(1, 1000),
             this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),79,80),
             this.getLastListValue("SP" + dg.getNumberBetween(1, 15).toString(),80,70), //80
-            this.getParentSchema(0).getListItem(82), 
-            this.getParentSchema(0).getListItem(14), 
+            this.getParentSchema(0).getListItem(83), 
+            this.getParentSchema(0).getListItem(15), 
             this.getLastListValue(dg.getLocCurrency(),83,90), 
             this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),84,80),
             this.getLastListValue("LO" + dg.getNumberBetween(1, 20).toString(),85,80),
             this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),86,80),
-            this.getParentSchema(0).getListItem(52),
             this.getParentSchema(0).getListItem(53),
             this.getParentSchema(0).getListItem(54),
             this.getParentSchema(0).getListItem(55),
             this.getParentSchema(0).getListItem(56),
             this.getParentSchema(0).getListItem(57),
+            this.getParentSchema(0).getListItem(58),
             dg.getCurrency(1, 400000), //-7000
             dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),
             "SD",

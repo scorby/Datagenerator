@@ -48,6 +48,7 @@ public class SchemaVAITM extends Schemas {
         "SOLD_TO",
         "RATE_TYPE",
         "GN_CUSTOM",
+        "CUST_GROUP",
         "CUST_GRP1",
         "CUST_GRP2",
         "CUST_GRP3",
@@ -173,6 +174,7 @@ public class SchemaVAITM extends Schemas {
             this.getParentSchema(0).getListItem(8),
             this.getParentSchema(0).getListItem(9),
             this.getParentSchema(0).getListItem(10),//Kunde
+            "C" + dg.getNumberBetween(1, 9).toString(),
             this.getParentSchema(0).getListItem(11),
             this.getParentSchema(0).getListItem(12),
             this.getParentSchema(0).getListItem(13),
@@ -187,8 +189,8 @@ public class SchemaVAITM extends Schemas {
             this.getParentSchema(0).getListItem(23),
             dg.getNumberBetween(1, 9).toString() + "00", //Plant
             dg.getItem(reasonrej, 25),
-            this.getLastListValue(dg.getItem(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),50,null),31,90), //Ch_On
-            this.getLastListValue(dg.getItem(orderprb, 100),32,50),
+            this.getLastListValue(dg.getItem(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),50,null),32,90), //Ch_On
+            this.getLastListValue(dg.getItem(orderprb, 100),33,50),
             dg.getCurrency(1, 200000), //-30000
             "SD",
             null,
@@ -197,14 +199,14 @@ public class SchemaVAITM extends Schemas {
             dg.getItem("1",95,"2"),
             dg.getItem("4020000000000",25,null),
             dg.getDateBetween((Date) this.getParentSchema(0).getListItem(24), dg.getDate(2013,12,31)), //40
-            this.getLastListValue(dg.getLastName(),41,75),
+            this.getLastListValue(dg.getLastName(),42,75),
             dg.getDateBetween(new Date(28800000),new Date(64800000)),
             dg.getItem("G3",5,null),
             dg.getItem("KG",95,"TO"),
             null,
             dg.getCurrency(1, 2000), //-1000
             dg.getCurrency(1, 2000), //-1000
-            this.getLastListValue(dg.getItem(condprun,100),48,80),
+            this.getLastListValue(dg.getItem(condprun,100),49,80),
             null,
             "1", //50
             null,
@@ -216,30 +218,30 @@ public class SchemaVAITM extends Schemas {
             dg.getCurrency(1, 400000), //-7000
             dg.getCurrency(1, 400000), //-7000
             "0",
-            this.getLastListValue(dg.getStorLoc(),60,50),
+            this.getLastListValue(dg.getStorLoc(),61,50),
             dg.getCurrency(1, 1000), //-1000
-            this.getLastListValue(Integer.toString(dg.getNumberBetween(1, 8)) + "0" + Integer.toString(dg.getNumberBetween(1, 8)),62,80),
+            this.getLastListValue(Integer.toString(dg.getNumberBetween(1, 8)) + "0" + Integer.toString(dg.getNumberBetween(1, 8)),63,80),
             dg.getNumberBetween(100000,108000),
             dg.getNumberBetween(100000,108000),
-            this.getLastListValue(dg.getItem(condprun,100),65,80),
-            this.getLastListValue(dg.getNumberBetween(100,900),66,75),
+            this.getLastListValue(dg.getItem(condprun,100),66,80),
+            this.getLastListValue(dg.getNumberBetween(100,900),67,75),
             dg.getItem(matlgrp2, 10),
             dg.getItem("R01",5,null),
-            this.getLastListValue(dg.getItem(matlgrp4,20),69,80),
-            this.getLastListValue(dg.getItem(matlgrp5,20),70,80),
+            this.getLastListValue(dg.getItem(matlgrp4,20),70,80),
+            this.getLastListValue(dg.getItem(matlgrp5,20),71,80),
             dg.getCurrency(1, 300000), //-2000
             dg.getCurrency(0, 40000),
             dg.getCurrency(8000, 2000000),
             dg.getCurrency(1, 250000), //-100000
             dg.getItem(unlpoint, 10),
-            this.getLastListValue(dg.getNumberBetween(10000000,30000000),76,75),
-            this.getLastListValue(dg.getNumberBetween(10000000,30000000),76,75),
-            this.getLastListValue(dg.getNumberBetween(1010043601,1030043601),78,60),
-            this.getLastListValue(dg.getNumberBetween(110043601,230043601),79,70),
-            this.getLastListValue(dg.getNumberBetween(104856,204856),80,85),
-            this.getLastListValue(dg.getItemCateg(),81,50),
+            this.getLastListValue(dg.getNumberBetween(10000000,30000000),77,75),
+            this.getLastListValue(dg.getNumberBetween(10000000,30000000),77,75),
+            this.getLastListValue(dg.getNumberBetween(1010043601,1030043601),79,60),
+            this.getLastListValue(dg.getNumberBetween(110043601,230043601),80,70),
+            this.getLastListValue(dg.getNumberBetween(104856,204856),81,85),
+            this.getLastListValue(dg.getItemCateg(),82,50),
             this.getParentSchema(0).getListItem(26), //sales Emply
-            this.getLastListValue(dg.getRoute(),83,85),
+            this.getLastListValue(dg.getRoute(),84,85),
             dg.getItem("E",5,null),
             this.getParentSchema(0).getListItem(27).toString().substring(0, 1) + dg.getNumberBetween(1, 5).toString(),
             this.getParentSchema(0).getListItem(27),
@@ -273,6 +275,7 @@ public class SchemaVAITM extends Schemas {
                 new Optional(),
                 new Optional(),
                 new Optional(new FmtDate("YYYY-MM-dd")),
+                new Optional(),
                 new Optional(),
                 new Optional(),
                 new Optional(),

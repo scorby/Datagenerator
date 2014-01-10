@@ -195,6 +195,7 @@ public class FormMain extends javax.swing.JFrame {
         VCHDR.setSubschema(VCITM);
         VCITM.setParentSchema(VAITM);
         VCITM.setParentSchema(VCHDR);
+
        
         //Schemas schemas = new Schemas();
         Integer maxSize = this.jTextField2.getText().isEmpty() ? 0 : Integer.parseInt(this.jTextField2.getText());
@@ -276,6 +277,7 @@ public class FormMain extends javax.swing.JFrame {
             Map.Entry<String, List<Long>> entry = entries.next();
             List<Long> l = entry.getValue();
             jTextPane1.setText(jTextPane1.getText() + "\n" + entry.getKey() + ": " + l.get(0) + " (" + (l.get(1)/1000) + " KB)");
+            entries.remove(); // avoids a ConcurrentModificationException
         }
         jTextPane1.update(jTextPane1.getGraphics());
     }
