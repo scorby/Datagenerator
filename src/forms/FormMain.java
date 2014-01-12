@@ -181,20 +181,20 @@ public class FormMain extends javax.swing.JFrame {
         VDHDR.setBottomTop(true);
         VCHDR.setBottomTop(true);
         
-        VDHDR.setSubschema(VDITM);
+        VDHDR.setSubschema("VDITM",VDITM);
+        VAHDR.setSubschema("VAITM",VAITM);
+        VCHDR.setSubschema("VCITM",VCITM);
         
-        VAHDR.setSubschema(VAITM);
+        VAITM.setParentSchema("VAHDR",VAHDR);
+        VAITM.setSubschema("VCITM",VCITM);
+        VAITM.setSubschema("VDITM",VDITM);
         
-        VAITM.setParentSchema(VAHDR);
-        VAITM.setSubschema(VDITM);
-        VAITM.setSubschema(VCITM);
+        VDITM.setParentSchema("VAITM",VAITM);
+        VDITM.setParentSchema("VDHDR",VDHDR);
         
-        VDITM.setParentSchema(VAITM);
-        VDITM.setParentSchema(VDHDR);
-        
-        VCHDR.setSubschema(VCITM);
-        VCITM.setParentSchema(VAITM);
-        VCITM.setParentSchema(VCHDR);
+        VCHDR.setSubschema("VCITM",VCITM);
+        VCITM.setParentSchema("VAITM",VAITM);
+        VCITM.setParentSchema("VCHDR",VCHDR);
 
        
         //Schemas schemas = new Schemas();
@@ -277,7 +277,6 @@ public class FormMain extends javax.swing.JFrame {
             Map.Entry<String, List<Long>> entry = entries.next();
             List<Long> l = entry.getValue();
             jTextPane1.setText(jTextPane1.getText() + "\n" + entry.getKey() + ": " + l.get(0) + " (" + (l.get(1)/1000) + " KB)");
-            entries.remove(); // avoids a ConcurrentModificationException
         }
         jTextPane1.update(jTextPane1.getGraphics());
     }

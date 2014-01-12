@@ -7,12 +7,9 @@ package schemas;
  */
 
 import datagenerator.DataGenerator;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import org.supercsv.cellprocessor.*;
-import org.supercsv.cellprocessor.ift.*;
-import org.supercsv.cellprocessor.constraint.*;
+import java.util.Map;
 /**
  *
  * @author Martin Kleehaus
@@ -28,40 +25,8 @@ public class SchemaVDHDR extends Schemas  {
     }
     
     @Override
-    public String[] getHeader() {
-        final String[] header = new String[] { 
-            "BILL_NUM",
-            "BILL_TYPE",
-            "BILL_CAT",
-            "BILL_DATE",
-            "COMP_CODE",
-            "CREATEDON",
-            "BIL_H_CNT",
-            "GN_CUSTOM",
-            "CUST_GROUP",
-            "DISTR_CHAN",
-            "DOC_CATEG",
-            "DOC_CURRCY",
-            "EXRATE_ACC",
-            "FISCVARNT",
-            "GN_R3_SSY",
-            "LOC_CURRCY",
-            "PAYER",
-            "RATE_TYPE",
-            "RECORDMODE",
-            "SALESEMPLY",
-            "SALESORG",
-            "SALES_DIST",
-            "SOLD_TO",
-            "STAT_CURR"
-        };
-        
-        return header;
-    }
-    
-    @Override
-    public List<Object> getData() throws Exception {
-        if(this.getListItem(0) == this.getSubschema(0).getListItem(0)) {
+    public Map<String, Object> getData() throws Exception{
+        if(this.getMapItem("BILL_NUM") == this.getSubschema("VDITM").getMapItem("BILL_NUM")) {
             return null;
         }
         DataGenerator dg = DataGenerator.getInstance();
@@ -71,72 +36,39 @@ public class SchemaVDHDR extends Schemas  {
         String[] dCateg = {"B", "C", "G", "H", "L"};
         
         final List<Object> csvList;
-        this.setPrimaryKey(Integer.parseInt(this.getSubschema(0).getListItem(0).toString()));
+        this.setPrimaryKey(Integer.parseInt(this.getSubschema("VDITM").getMapItem("BILL_NUM").toString()));
         
-        csvList = Arrays.asList(new Object[] {
-            this.getSubschema(0).getListItem(0),
-            this.getSubschema(0).getListItem(2),
-            this.getSubschema(0).getListItem(3),
-            this.getSubschema(0).getListItem(4),
-            this.getSubschema(0).getListItem(11),
-            this.getLastListValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),5,80),
-            dg.getNumberBetween(1, 10),
-            this.getSubschema(0).getListItem(22),
-            "C" + dg.getNumberBetween(1, 9).toString(),
-            dg.getItem(1, 90, 9),
-            this.getLastListValue(dg.getItem(dCateg),10,80),
-            this.getLastListValue(dg.getLocCurrency(),11,80),
-            null,
-            "K4",
-            null,
-            this.getLastListValue(dg.getLocCurrency(),11,100),
-            this.getLastListValue(dg.getNumberBetween(10000000,30000000),16,75),
-            this.getSubschema(0).getListItem(61),
-            null,
-            this.getSubschema(0).getListItem(72),
-            this.getSubschema(0).getListItem(73),
-            "1",
-            this.getSubschema(0).getListItem(81),
-            this.getLastListValue(dg.getLocCurrency(),11,80),
+        int cnt = 0;
+        
+        Map<String, Object> columns = new HashMap<>();   
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_NUM"));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_TYPE"));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_CAT"));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_DATE"));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("COMP_CODE"));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"CREATEDON",80));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getRowCount());
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("GN_CUSTOM"));
+        columns.put(this.getHeader()[cnt++],"C" + dg.getNumberBetween(1, 9).toString());
+        columns.put(this.getHeader()[cnt++],dg.getItem(1, 90, 9));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(dCateg),"DOC_CATEG",80));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",80));
+        columns.put(this.getHeader()[cnt++],null);
+        columns.put(this.getHeader()[cnt++],"K4");
+        columns.put(this.getHeader()[cnt++],null);
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",100));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(10000000,30000000),"PAYER",75));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("RATE_TYPE"));
+        columns.put(this.getHeader()[cnt++],null);
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("SALESEMPLY"));
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("SALESORG"));
+        columns.put(this.getHeader()[cnt++],"1");
+        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("SOLD_TO"));
+        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",80));
             
-        });
+        this.setMap(columns);
         
-        this.setList(csvList);
-        
-        return csvList;
-    }
-    
-    @Override
-    public CellProcessor[] getProcessors() {
-     
-        final CellProcessor[] processors = new CellProcessor[] { 
-                new Optional(),
-                new Optional(),   
-                new Optional(),
-                new Optional(new FmtDate("YYYY-MM-dd")),
-                new Optional(), 
-                new Optional(new FmtDate("YYYY-MM-dd")),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional()
-        };
-        
-        return processors;
+        return columns;
     }
     
     @Override

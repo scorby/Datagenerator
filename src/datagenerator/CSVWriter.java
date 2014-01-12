@@ -109,7 +109,7 @@ public class CSVWriter {
     private void writeData(Schemas schema) throws Exception {
 
         // write the data
-        Integer rowCount = schema.getRowCount();
+        Integer rowCount = schema.getRandomRowCount();
         for(int i = 1;i<=rowCount;i++) 
         {
             if(!this.checkConstraints(schema)) {
@@ -120,14 +120,13 @@ public class CSVWriter {
             if(this.csvMap != null) { 
                 schema.mapWriter.write(this.csvMap, schema.getHeader(), schema.getProcessors());
                
-                //schema.mapWriter.write(this.csvList, schema.getProcessors());
                 schema.setCurrentRow();
                 this.setOverallSize();
                 this.currentRows++;
             }
             this.addSchemaMap(schema);
             if(schema.getSubschemas().size() > 0 && !schema.getBottomTop()) {
-                for (Schemas s:schema.getSubschemas()) {
+                for (Schemas s:schema.getSubschemas().values()) {
                     this.writeSchema(s);
                 }
 
@@ -136,7 +135,7 @@ public class CSVWriter {
         }
         
         if(schema.getParentSchemas().size() > 0 && rowCount > 0) {
-            for(Schemas s:schema.getParentSchemas()) {
+            for(Schemas s:schema.getParentSchemas().values()) {
                 if(s.getBottomTop()) {
                     this.writeSchema(s);
                 }

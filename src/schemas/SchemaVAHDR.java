@@ -7,19 +7,9 @@ package schemas;
  */
 
 import datagenerator.DataGenerator;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.supercsv.cellprocessor.*;
-import org.supercsv.cellprocessor.ift.*;
-import org.supercsv.cellprocessor.constraint.*;
-import org.supercsv.io.CsvListReader;
-import org.supercsv.io.ICsvListReader;
-import org.supercsv.prefs.CsvPreference;
 /**
  *
  * @author Martin Kleehaus
@@ -80,46 +70,7 @@ public class SchemaVAHDR extends Schemas  {
         
         return columns;
     }
-    
-    @Override
-    public CellProcessor[] getProcessors() {
-     
-        final CellProcessor[] processors = new CellProcessor[] { 
-                new UniqueHashCode(), // customerNo (must be unique)
-                new FmtDate("YYYY-MM-dd"),    
-                new Optional(),
-                new Optional(),
-                new FmtDate("YYYY-MM-dd"), 
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(),
-                new Optional(), 
-                new FmtDate("YYYY-MM-dd"), 
-                new Optional(),
-                new Optional(),
-                new Optional(),       
-                new FmtDate("YYYY-MM-dd"), 
-                new Optional(),
-                new Optional()
-        };
-        
-        return processors;
-    }
+   
     
     @Override
     public String getName() {
@@ -147,6 +98,11 @@ public class SchemaVAHDR extends Schemas  {
     @Override
     public void setPrimaryKey (Integer key) {
         this.primaryKey = key;
+    }
+
+    @Override
+    public Integer getRandomRowCount() {
+        return 1;
     }
     
     @Override

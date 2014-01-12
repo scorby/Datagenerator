@@ -338,16 +338,45 @@ public class DataGenerator {
         return min + random.nextInt(max - min);
     }
     
+    /**
+     * Returns a currency betwen min and max and 2 decimal places
+     * 
+     * @param min
+     *            minimum value of result
+     * @param max
+     *            maximum value of result
+     * @return Random double within range
+     */
     public Double getCurrency(int min, int max) {
-        validateMinMaxParams(min, max);
-        Double currency = random.nextDouble();
-        
-        return round(min + (currency * (max - min)),2);
+        return this.getDecimal(min, max, 2);
     }
     
+     /**
+     * Returns a boolean value
+     * 
+     * @return Random integer within 0 and 1
+     */
     public boolean getBoolean() {
 
         return this.getNumberBetween(0, 2) == 1;
+    }
+    
+     /**
+     * Returns a currency betwen min and max and n decimal places
+     * 
+     * @param min
+     *            minimum value of result
+     * @param max
+     *            maximum value of result
+     * @param places
+     *            number of decimal places
+     * @return Random double within range
+     */
+    public Double getDecimal(int min, int max, int places) {
+        validateMinMaxParams(min, max);
+        Double decimal = random.nextDouble();
+        
+        return round(min + (decimal * (max - min)),places);
     }
 
     /**
