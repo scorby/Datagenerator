@@ -21,6 +21,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
+import java.util.Map;
+import java.util.Set;
 import java.util.spi.CurrencyNameProvider;
 import javax.swing.JProgressBar;
 
@@ -67,7 +69,7 @@ public class DataGenerator {
      *            value to return if the probability test fails
      * @return Item from the list
      */
-    public <T> T getItem(T item, int probability, T defaultItem) {
+    public <T> T getItem(T item, double probability, T defaultItem) {
             List<T> list = new ArrayList<>();
             list.add(item);
             return getItem(list, probability, defaultItem);
@@ -83,7 +85,7 @@ public class DataGenerator {
      * @return Item from the list
      */
     public <T> T getItem(List<T> items) {
-            return getItem(items, 100, null);
+            return getItem(items, 100.0, null);
     }
 
     /**
@@ -100,7 +102,7 @@ public class DataGenerator {
      *            the list
      * @return Item from the list or null if the probability test fails.
      */
-    public <T> T getItem(List<T> items, int probability) {
+    public <T> T getItem(List<T> items, double probability) {
             return getItem(items, probability, null);
     }
 
@@ -120,7 +122,7 @@ public class DataGenerator {
      *            value to return if the probability test fails
      * @return Item from the list or the default value
      */
-    public <T> T getItem(List<T> items, int probability, T defaultItem) {
+    public <T> T getItem(List<T> items, double probability, T defaultItem) {
             if (items == null) {
                     throw new IllegalArgumentException("Item list cannot be null");
             }
@@ -141,7 +143,7 @@ public class DataGenerator {
      * @return Item from the array
      */
     public <T> T getItem(T[] items) {
-            return getItem(items, 100, null);
+            return getItem(items, 100.0, null);
     }
 
     /**
@@ -158,7 +160,7 @@ public class DataGenerator {
      *            the array
      * @return Item from the array or the default value
      */
-    public <T> T getItem(T[] items, int probability) {
+    public <T> T getItem(T[] items, double probability) {
             return getItem(items, probability, null);
     }
 
@@ -178,7 +180,7 @@ public class DataGenerator {
      *            value to return if the probability test fails
      * @return Item from the array or the default value
      */
-    public <T> T getItem(T[] items, int probability, T defaultItem) {
+    public <T> T getItem(T[] items, double probability, T defaultItem) {
             if (items == null) {
                     throw new IllegalArgumentException("Item array cannot be null");
             }
@@ -307,6 +309,19 @@ public class DataGenerator {
             return getNumberBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
     
+     /**
+     * Returns a random int value with average and standard deviation.
+     * 
+     * @param avg
+     * @param std
+     * @return random number
+     */
+    public int getNumber(double avg, double std) {
+        Double val = random.nextGaussian() * avg + std;
+        
+        return val.intValue();
+    }
+    
     public Integer getUniqueNumber() {
         return this.uniqueNumber++;
     }
@@ -319,7 +334,7 @@ public class DataGenerator {
      *            Maximum value of result
      * @return random number no more than max
      */
-    public int getNumberUpTo(int max) {
+    public Integer getNumberUpTo(int max) {
             return getNumberBetween(0, max);
     }
 
@@ -335,7 +350,7 @@ public class DataGenerator {
     public Integer getNumberBetween(int min, int max) {
 
         validateMinMaxParams(min, max);
-        return min + random.nextInt(max - min);
+        return min + random.nextInt(max-min);
     }
     
     /**
@@ -351,6 +366,38 @@ public class DataGenerator {
         return this.getDecimal(min, max, 2);
     }
     
+    /**
+     * Returns a currency with average avg and standard deviation std and 2 decimal places
+     * 
+     * @param avg
+     *            average value of result
+     * @param std
+     *            standard deviation of result
+     * @return Random double within avg and std
+     */
+    public Double getCurrency(double avg, double std) {
+        return this.getDecimal(avg, std, 2);
+    }
+    
+     /**
+     * Returns a currency with average avg and standard deviation std and 2 decimal places which is smaller than max
+     * 
+     * @param avg
+     *            average value of result
+     * @param std
+     *            standard deviation of result
+     * @param max
+     *            max value 
+     * @return Random double within avg and std which is lower than max
+     */
+    public Double getCurrency(double avg, double std, double max) {
+        Double val = this.getDecimal(avg, std, 2);
+        if(val > max){
+            return max;
+        }
+        return val;
+    }
+    
      /**
      * Returns a boolean value
      * 
@@ -359,6 +406,23 @@ public class DataGenerator {
     public boolean getBoolean() {
 
         return this.getNumberBetween(0, 2) == 1;
+    }
+    
+     /**
+     * Returns a decimal betwen with avg value and standard deviation std
+     * 
+     * @param avg
+     *            average value of result
+     * @param std
+     *            standard deviation of result
+     * @param places
+     *            number of decimal places
+     * @return Random double within avg and std
+     */
+    public Double getDecimal(double avg, double std, int places) {
+        Double decimal = random.nextGaussian()*avg + std;
+        
+        return round(decimal,places);
     }
     
      /**
@@ -437,6 +501,38 @@ public class DataGenerator {
             Date result = new Date();
             result.setTime(minDate.getTime() + (seconds * 1000));
             return result;
+    }
+    
+    public Date getDate(Date baseDate, double avg, double std) {
+        Double val = random.nextGaussian() * std + avg;
+        Calendar cal = Calendar.getInstance();
+        if(baseDate != null) {
+            cal.setTime(baseDate);
+            cal.add(Calendar.DATE, val.intValue()<0 ? 0 : val.intValue());
+        } else {
+            return null;
+        }
+        return cal.getTime();
+    }
+    
+    public Date getTime(double avg, double std) {
+        Double val = random.nextGaussian() * std + avg;
+        Date d = new Date(val.longValue());
+
+        return d;
+    }
+    
+    public String getRange(Map<String, Double> map) {
+        Double val = random.nextDouble();
+        String ret = new String();
+        Set<String> set = map.keySet();
+        for (String key : set) {
+            if(map.get(key) >= val) {
+                ret = key;
+                break;
+            }
+        }
+        return ret;
     }
     
 
@@ -716,8 +812,8 @@ public class DataGenerator {
      *            % chance of returning true
      * @return
      */
-    public boolean chance(int chance) {
-            return random.nextInt(100) < chance;
+    public boolean chance(double chance) {
+            return random.nextDouble() < chance;
     }
 
     public NameDataValues getNameDataValues() {

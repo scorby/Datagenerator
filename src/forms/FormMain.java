@@ -8,8 +8,6 @@ package forms;
 
 import schemas.SchemaVAHDR;
 import datagenerator.CSVWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +68,7 @@ public class FormMain extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jButton1);
 
+        jTextPane1.setEditable(false);
         jTextPane1.setDoubleBuffered(true);
         jScrollPane2.setViewportView(jTextPane1);
 
@@ -168,7 +167,71 @@ public class FormMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      
+        this.startDataGenerator();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public void buildTextPaneContent(CSVWriter writer) {
+        jTextPane1.setText("Rows: " + writer.getCurrentRows() + " (" + writer.getOverallSize()/1000 + " KB)");
+        jTextPane1.setText(jTextPane1.getText() + "\n--------------------------------");
+        Iterator<Map.Entry<String, List<Long>>> entries = writer.getSchemaMap().entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, List<Long>> entry = entries.next();
+            List<Long> l = entry.getValue();
+            jTextPane1.setText(jTextPane1.getText() + "\n" + entry.getKey() + ": " + l.get(0) + " (" + (l.get(1)/1000) + " KB)");
+        }
+        jTextPane1.update(jTextPane1.getGraphics());
+    }
+    
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.jFileChooser1.setFileSelectionMode( this.jFileChooser1.DIRECTORIES_ONLY);
+        int returnVal = this.jFileChooser1.showOpenDialog(this);
+        if (returnVal == this.jFileChooser1.APPROVE_OPTION) {
+            this.jTextField3.setText(this.jFileChooser1.getSelectedFile().getAbsolutePath());
+            
+        } else {
+            this.jTextPane1.setText("Path access cancelled by user.");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */	
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() {
+                new FormMain().setVisible(true);
+            }
+        });
+    }
+    
+    private void startDataGenerator() {
         this.jTextPane1.setText("");
         
         Schemas VAHDR = new SchemaVAHDR();
@@ -178,6 +241,7 @@ public class FormMain extends javax.swing.JFrame {
         Schemas VCHDR = new SchemaVCHDR();
         Schemas VCITM = new SchemaVCITM();
         
+        VAHDR.setBottomTop(true);
         VDHDR.setBottomTop(true);
         VCHDR.setBottomTop(true);
         
@@ -251,7 +315,7 @@ public class FormMain extends javax.swing.JFrame {
 
             t.start();
             //time.start();
-            writer.createSchemas(VAHDR);
+            writer.createSchemas(VAITM);
             //writer.writeSchemas(schemas.getSchemas());
             success = true;
         }
@@ -265,67 +329,6 @@ public class FormMain extends javax.swing.JFrame {
                 this.jTextPane1.setText(jTextPane1.getText() + "\nDone!");
             }
         }
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    public void buildTextPaneContent(CSVWriter writer) {
-        jTextPane1.setText("Rows: " + writer.getCurrentRows() + " (" + writer.getOverallSize()/1000 + " KB)");
-        jTextPane1.setText(jTextPane1.getText() + "\n--------------------------------");
-        Iterator<Map.Entry<String, List<Long>>> entries = writer.getSchemaMap().entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<String, List<Long>> entry = entries.next();
-            List<Long> l = entry.getValue();
-            jTextPane1.setText(jTextPane1.getText() + "\n" + entry.getKey() + ": " + l.get(0) + " (" + (l.get(1)/1000) + " KB)");
-        }
-        jTextPane1.update(jTextPane1.getGraphics());
-    }
-    
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        this.jFileChooser1.setFileSelectionMode( this.jFileChooser1.DIRECTORIES_ONLY);
-        int returnVal = this.jFileChooser1.showOpenDialog(this);
-        if (returnVal == this.jFileChooser1.APPROVE_OPTION) {
-            this.jTextField3.setText(this.jFileChooser1.getSelectedFile().getAbsolutePath());
-            
-        } else {
-            this.jTextPane1.setText("Path access cancelled by user.");
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FormMain().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

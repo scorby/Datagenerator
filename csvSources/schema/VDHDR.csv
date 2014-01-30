@@ -1,25 +1,98 @@
-Name;Type;Optional;Format
-BILL_NUM;primary;n;
-BILL_TYPE;;y;
-BILL_CAT;;y;
-BILL_DATE;date;y;YYYY-MM-dd
-COMP_CODE;;y;
-CREATEDON;date;n;YYYY-MM-dd
-BIL_H_CNT;;y;
-GN_CUSTOM;;y;
-CUST_GROUP;;y;
-DISTR_CHAN;;y;
-DOC_CATEG;;y;
-DOC_CURRCY;;y;
-EXRATE_ACC;;y;
-FISCVARNT;;y;
-GN_R3_SSY;;y;
-LOC_CURRCY;;y;
-PAYER;;y;
-RATE_TYPE;;y;
-RECORDMODE;;y;
-SALESEMPLY;;y;
-SALESORG;;y;
-SALES_DIST;;y;
-SOLD_TO;;y;
-STAT_CURR;;y;
+header;type;optional;format;change;sfactor;avg;std;max;min;isnumber;distinctvalues
+Cl.;string;y;;0;206;206;0;;;0;1
+Delivery;string;n;;1;1;1;0;;;0;206
+Created by;string;y;;0,243902439;15,84615385;15,84615385;44,05040147;;;0;13
+Time;date;y;HH:mm:ss;;;0,482354481;0,116392225;0,770914352;0,270590278;1;113
+Created on;date;y;YYYY-MM-dd;;;41623,83495;34,62245066;41643;41334;1;29
+SDst;string;y;;0,863414634;2,543209877;2,543209877;3,095394359;;;0;81
+ShPt;string;y;;0,848780488;3,029411765;3,029411765;2,985113005;;;0;68
+SOrg.;string;y;;0;206;206;0;;;0;1
+DlvTy;string;y;;0;206;206;0;;;0;1
+Pl.GI date;date;y;YYYY-MM-dd;;;41623,81553;34,6353119;41643;41334;1;30
+Loadg Date;date;y;YYYY-MM-dd;;;41623,81553;34,6353119;41643;41334;1;30
+TrpPlanDt;date;y;YYYY-MM-dd;;;41623,81553;34,6353119;41643;41334;1;30
+Deliv.Date;date;y;YYYY-MM-dd;;;41623,82524;34,63817919;41643;41334;1;30
+Pick Date;date;y;YYYY-MM-dd;;;41623,81553;34,6353119;41643;41334;1;30
+Unloading Point;string;y;;0;206;206;0;;;0;1
+IncoT;string;y;;0,185365854;103;103;67;;;0;2
+Route;string;y;;0,195121951;68,66666667;68,66666667;72,55955408;;;0;3
+DlBl;string;y;;0,03902439;103;103;96;;;0;2
+DocCa;string;y;;0;206;206;0;;;0;1
+FacCal;string;y;;0;206;206;0;;;0;1
+DPrio;string;y;;0,292682927;51,5;51,5;54,13178364;;;0;4
+SC;string;y;;0,195121951;68,66666667;68,66666667;72,55955408;;;0;3
+Ship-to;string;y;;0,863414634;2,395348837;2,395348837;3,035752348;;;0;86
+Sold-to pt;string;y;;0,736585366;7,62962963;7,62962963;11,60187772;;;0;27
+Wait Time Class (as Factor) (Variable Po;string;y;;0;206;0;0;;;1;1
+Wait Time Surcharge (Fixed Portion);string;y;;0;206;0;0;;;1;1
+Total Weight;number;y;#,##0.000;;;13,43368932;7,710709814;29,94;0,14;1;108
+Net weight;number;y;#,##0.000;;;13,43368932;7,710709814;29,94;0,14;1;108
+WUn;string;y;;0;206;206;0;;;0;1
+Volume;number;y;#,##0.000;0;206;0;0;;;1;1
+No.Pk;string;y;;0,195121951;103;103;65;;;0;2
+At;date;y;HH:mm:ss;;;0,464962131;0,108626524;0,692465278;0,279178241;1;50
+WgtGr;string;y;;0;206;206;0;;;0;1
+TGroup;string;y;;0;206;206;0;;;0;1
+BlTy;string;y;;0;206;206;0;;;0;1
+Billing Date;date;y;YYYY-MM-dd;;;41623,81553;34,6353119;41643;41334;1;30
+Route;string;y;;0,195121951;68,66666667;68,66666667;72,55955408;;;0;3
+Proc.;string;y;;0;206;206;0;;;0;1
+Curr.;string;y;;0;206;206;0;;;0;1
+SOff.;string;y;;0,468292683;51,5;51,5;23,15707235;;;0;4
+ProcTime;string;y;;0;206;0;0;;;1;1
+Combination criteria for delivery;string;y;;0,185365854;68,66666667;68,66666667;46,31294515;;;0;3
+Curr.;string;y;;0;206;206;0;;;0;1
+Changed by;string;y;;0,575609756;5,421052632;5,421052632;10,68109885;;;0;38
+Chngd on;date;y;YYYY-MM-dd;;;41639,80097;19,05458652;41649;41387;1;12
+CCAr;string;y;;0;206;206;0;;;0;1
+Cred. acct;string;y;;0,736585366;7,62962963;7,62962963;11,60187772;;;0;27
+Cred;string;y;;0,443902439;68,66666667;68,66666667;46,52120186;;;0;3
+Cred.rep.grp;string;y;;0,682926829;20,6;20,6;17,13592717;;;0;10
+Risk category;string;y;;0,512195122;68,66666667;68,66666667;39,93606001;;;0;3
+Curr.;string;y;;0;206;206;0;;;0;1
+Released credit value;string;y;;0;206;0;0;;;1;1
+TrpT;string;y;;0;206;206;0;;;0;1
+Means of Trans. ID;string;y;;0,96097561;1,596899225;1,596899225;1,131092494;;;0;129
+Doc. Date;date;y;YYYY-MM-dd;;;41623,83495;34,62245066;41643;41334;1;29
+Ac.GI date;date;y;YYYY-MM-dd;;;41623,81553;34,6353119;41643;41334;1;30
+Net value;number;y;#,##0.00;;;18,99781553;40,17728729;202,5;0;1;59
+Pick. time;date;y;HH:mm:ss;;;0,006381472;0,04566832;0,359722222;0;1;4
+TP Time;date;y;HH:mm:ss;0;206;0;0;;;1;1
+Loadg Time;date;y;HH:mm:ss;;;0,388224784;0,197453349;0,729166667;0;1;86
+GI Time;date;y;HH:mm:ss;;;0,165628371;0,219682908;0,675;0;1;46
+TCode;string;y;;0,2;68,66666667;68,66666667;71,76040381;;;0;3
+Co.ID;string;y;;0,146341463;103;103;74;;;0;2
+Distance;number;y;#,##0.000;;;17,25778155;16,36443632;81,264;0;1;86
+Dis;string;y;;0,16097561;68,66666667;68,66666667;76,75212628;;;0;3
+Veh. Plate No.;string;y;;0,965853659;1,560606061;1,560606061;1,024381378;;;0;132
+Country;string;y;;;;;;;;;
+IDoc number;string;y;;0,912195122;1,218934911;1,218934911;2,837720779;;;0;169
+IDOC Creation Time + Number of Retries;string;y;;0,912195122;1,218934911;1,218934911;2,837720779;;;0;169
+Gross Weight GVM;number;y;#,##0.000;;;13,20747573;15,63729621;44;0;1;75
+Tare Weight;number;y;#,##0.000;;;5,37684466;5,806455385;16;0;1;65
+TareCompl;string;y;;0,224390244;103;103;38;;;0;2
+Tare Weight;string;y;;;;0,118446602;0,560943904;3,5;0;1;9
+Weighcomp;string;y;;0,175609756;103;103;1;;;0;2
+Time Ticket Printed;date;y;HH:mm:ss;;;0,458121966;0,109405546;0,734814815;0,28880787;1;129
+Ticket status;string;y;;0;206;206;0;;;0;1
+User Name;string;y;;0,853658537;2,746666667;2,746666667;2,519753074;;;0;75
+Weigh Bridge Number;string;y;;0,341463415;41,2;41,2;47,98916544;;;0;5
+Printer Number;string;y;;0,07804878;68,66666667;68,66666667;89,33955202;;;0;3
+SynchroTESS Order Number;string;y;;0,912195122;1,218934911;1,218934911;2,837720779;;;0;169
+Dummy Truck - Registration Number;string;y;;0,07804878;34,33333333;34,33333333;72,74995227;;;0;6
+Dummy Truck - Maximum Capacity;number;y;#,##0.000;;;0,090291262;0,525707804;5,06;0;1;9
+Dummy Truck - Gross Weight;number;y;#,##0.000;;;0,208737864;1,035996685;7,5;0;1;5
+Terminal;string;y;;0,497560976;7,103448276;7,103448276;18,12474937;;;0;29
+ZZPRELOAD;string;y;;0,214634146;68,66666667;68,66666667;70,37676384;;;0;3
+TESYS Order Number of Mother Order;string;y;;0,03902439;41,2;41,2;77,90096277;;;0;5
+NumBabies;string;y;;0,03902439;68,66666667;68,66666667;94,28443963;;;0;3
+Mother/Child Sequence Number;string;y;;0,063414634;51,5;51,5;84,01339179;;;0;4
+Driver;string;y;;0,96097561;1,622047244;1,622047244;1,156488943;;;0;127
+Start Load Processing Complete (True/Fal;string;y;;0;206;206;0;;;0;1
+LoadPt;string;y;;0,43902439;22,88888889;22,88888889;33,30146625;;;0;9
+Wet Return Re-Use Quantity;number;y;#,##0.000;0;206;0;0;;;1;1
+NAWI Serial Number;string;y;;0,346341463;4,577777778;4,577777778;23,73229294;;;0;45
+TESYS IDOCS thus far sent;string;y;;0,214634146;68,66666667;68,66666667;68,18764958;;;0;3
+Order;string;y;;0,726829268;1,68852459;1,68852459;7,483404554;;;0;122
+Confirm.;string;y;;0,726829268;1,68852459;1,68852459;7,483404554;;;0;122
+Counter;string;y;;0,273170732;68,66666667;68,66666667;50,17524844;;;0;3

@@ -9,9 +9,14 @@ package schemas;
 import datagenerator.DataGenerator;
 import java.io.File;
 import java.io.FileReader;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.FmtDate;
@@ -44,10 +49,9 @@ public abstract class Schemas {
     private Integer countFiles = 1;
     public boolean headerWritten = false;
     private boolean bottomTop = false;
-    private final List<String> headerName = new ArrayList<>();
-    private final List<String> headerType = new ArrayList<>();
-    private final List<String> headerFormat = new ArrayList<>();
-    private final List<String> headerOptional = new ArrayList<>();
+    private final Map<String, List<Object>> MasterData = new HashMap<>();
+    private final Map<String, List<Object>> MetaValues = new HashMap<>();
+    private Double netvalue = 0d;
     
 //    public List<SchemaInterface> getSchemas() {
 //        
@@ -60,7 +64,7 @@ public abstract class Schemas {
     
     public Schemas() {}
     
-    public <T> Object getLastMapValue(T item, String key, int probability) {
+    public <T> Object getLastMapValue(T item, String key, double probability) {
         DataGenerator dg = DataGenerator.getInstance();
        
         if (!this.tempMap.isEmpty()) {
@@ -68,6 +72,13 @@ public abstract class Schemas {
         }
         
         return item;
+    }
+    
+    public Object getLastMapValue(String key) {
+        if(this.tempMap.containsKey(key)) {
+            return this.tempMap.get(key);
+        }
+        return null;
     }
     
     public void setMap (Map<String, Object> aMap) {
@@ -139,9 +150,15 @@ public abstract class Schemas {
     public Integer getRandomRowCount() {
         DataGenerator dg = DataGenerator.getInstance();
         this.rowCount = dg.getNumberBetween(0, 10);
+        this.setCurrentRow(0);
         return this.rowCount;
     }
     
+    /**
+     * Get Number of rows which are associated to this schema
+     * 
+     * @return number of rows
+     */
     public Integer getRowCount () {
         return this.rowCount;
     }
@@ -149,7 +166,12 @@ public abstract class Schemas {
     public void setRowCount (Integer rowCount) {
         this.rowCount = rowCount;
     }
-    
+
+     /**
+     * If this function is true, the schema is build by its child
+     * 
+     * @return true or false
+     */
     public boolean getBottomTop () {
         return this.bottomTop;
     }
@@ -174,6 +196,11 @@ public abstract class Schemas {
         this.currentRow = i;
     }
     
+     /**
+     * Get the current number of rows in this schema
+     * 
+     * @return number of rows
+     */
     public Integer getCurrentRow() {
         return this.currentRow;
     }
@@ -193,27 +220,20 @@ public abstract class Schemas {
         String[] str;
 
         try {
-            listReader = new CsvListReader (new FileReader(path + "/" + filename + ".csv"),CsvPreference.STANDARD_PREFERENCE);
+            listReader = new CsvListReader (new FileReader(path + "/" + filename + ".csv"),CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
 
-            listReader.getHeader(true);
-
-            while( (listReader.read()) != null ) {
-                str = listReader.get(1).split(";");
-                this.headerName.add(str[0]);
-                if(str.length > 1)
-                    this.headerType.add(str[1]);
-                else
-                    this.headerType.add(null);
-                if(str.length > 2)
-                    this.headerOptional.add(str[2]);
-                else
-                    this.headerOptional.add(null);
-                if(str.length > 3)
-                    this.headerFormat.add(str[3]);
-                else
-                    this.headerFormat.add(null);
-
-                //csvContent.add(listReader.getUntokenizedRow()); 
+            String[] header = listReader.getHeader(true);
+            for (String key : header){
+                this.MetaValues.put(key, new ArrayList<>());
+            }
+            
+            List<String> list = new ArrayList<>();
+            int n;
+            while ((list = listReader.read()) != null){
+                n = 1;
+                for (String key : header){
+                    this.MetaValues.get(key).add(listReader.get(n++));
+                }
             }
 
         }
@@ -225,44 +245,42 @@ public abstract class Schemas {
 
     }
     
-      
-    public String[] getHeader() throws Exception{
-        if(this.headerName.isEmpty()) {
-            this.readCSVFile(this.getName());
-        }
-        return this.headerName.toArray(new String[this.headerName.size()]);
-    }
-    
     public CellProcessor[] getProcessors() throws Exception {
         List<Object> processorList = new ArrayList<>();
         int i = 0;
         CellProcessorAdaptor format = null;
         
-        if(this.headerType.isEmpty()) {
+        if(this.MetaValues.get("type").isEmpty()) {
             this.readCSVFile(this.getName());
         }
-
-        for(String type : this.headerType) {
-            switch(type.toLowerCase().trim()){
-                case "date":
-                    format = new FmtDate(this.headerFormat.get(i).toString());
-                    break;
-                case "time":
-                    format = new FmtDate(this.headerFormat.get(i).toString());
-                    break;
-                case "number":
-                    format = new FmtNumber(this.headerFormat.get(i).toString());
-                    break;
-                case "primary":
-                    format = new UniqueHashCode();
-                    break;
-                default:
-                    format = new Optional();
-                    break;
+        List<Object> typeList = this.MetaValues.get("type");
+        List<Object> formatList = this.MetaValues.get("format");
+        List<Object> optionalList = this.MetaValues.get("optional");
+        
+        for(Object type : typeList) {
+            format = new Optional();
+            if(type != null) {
+                switch(type.toString().toLowerCase().trim()){
+                    case "date":
+                        format = new FmtDate(formatList.get(i).toString());
+                        break;
+                    case "time":
+                        format = new FmtDate(formatList.get(i).toString());
+                        break;
+                    case "number":
+                        format = new FmtNumber(formatList.get(i).toString());
+                        break;
+                    case "primary":
+                        format = new UniqueHashCode();
+                        break;
+                    default:
+                        format = new Optional();
+                        break;
+                }
             }
-            if(this.headerOptional.get(i).toString().toLowerCase().equals("y") || 
-               this.headerOptional.get(i).toString().toLowerCase().equals("yes") ||
-               this.headerOptional.get(i).toString().equals("1") || this.headerOptional.isEmpty()) {
+            if(optionalList.get(i).toString().toLowerCase().equals("y") || 
+               optionalList.get(i).toString().toLowerCase().equals("yes") ||
+               optionalList.get(i).toString().equals("1") || optionalList.isEmpty()) {
                 format = new Optional(format);
 
             }
@@ -270,10 +288,102 @@ public abstract class Schemas {
             i++;
         }
         
+        
         final CellProcessor[] processor = processorList.toArray(new CellProcessor[processorList.size()]);
         
         return processor;
+ 
     }
+    
+    public String[] getMetaValues(String key) throws Exception{
+        if(!this.MetaValues.containsKey(key)) {
+            this.readCSVFile(this.getName());
+        }
+        
+        return this.MetaValues.get(key).toArray(new String[this.MetaValues.get(key).size()]);
+    }
+        
+    public Object getMasterData(String key, int pos, int row, Object md) throws Exception{
+        DataGenerator dg = DataGenerator.getInstance();
+        if(row > 0) {
+            Double sfactor = this.parseDouble(this.MetaValues.get("sfactor").get(pos).toString());
+            Integer rowCount = 0;
+            if(this.getMasterData(key) != null) {
+                rowCount = this.getMasterData(key).size();
+            } 
+
+            if (rowCount / row < sfactor) {
+                this.setMasterData(key, md);
+            }
+        } else {
+            this.setMasterData(key, md);
+        }
+
+        return this.getLastMapValue(this.MasterData.get(key).get(dg.getNumberUpTo(this.MasterData.get(key).size())), key, this.parseDouble(this.MetaValues.get("change").get(pos).toString()));
+
+    }
+    
+    public List<Object> getMasterData(String key) {
+        if(this.MasterData.containsKey(key)) {
+            return this.MasterData.get(key);
+        }
+        return null;
+    }
+    
+    public void setMasterData(String key, Object value) {
+        if(!this.MasterData.containsKey(key)) {
+            List<Object> list = new ArrayList<>();
+            list.add(value);
+            this.MasterData.put(key, list);
+        } else {
+            this.MasterData.get(key).add(value);
+        }
+    }
+    
+    public void dropMasterData(String key) {
+        if(this.MasterData.containsKey(key)) {
+            this.MasterData.remove(key);
+        }
+    }
+    
+    public double parseDouble(String input) throws NullPointerException, ParseException{
+        if(input == null){
+          throw new NullPointerException();
+        }
+
+        input = input.trim();
+
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.FRANCE);
+        ParsePosition parsePosition = new ParsePosition(0);
+        Number number = numberFormat.parse(input, parsePosition);
+
+        if(parsePosition.getIndex() != input.length()){
+          throw new ParseException("Invalid input", parsePosition.getIndex());
+        }
+
+        return number.doubleValue();
+   }
+    
+   public String fillString (String value, String fillChar, int count) {
+        String s = new String();
+        for(int i = 1;i<=(count-value.length());i++) {
+            s = s + fillChar;
+        }
+        return s + value;
+   }
+   
+   public Double getNetvalue() {
+       return this.netvalue;
+   }
+   
+   public void setNetvalue(Double value, boolean preserve) {
+       if(preserve) {
+           this.netvalue = value;
+       } else {
+           this.netvalue = this.netvalue + value;
+       }
+   }
+            
     
     public abstract void setUniqueNumber();
     public abstract Map<String, Object> getData() throws Exception;

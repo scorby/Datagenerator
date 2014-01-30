@@ -26,7 +26,7 @@ public class SchemaVDHDR extends Schemas  {
     
     @Override
     public Map<String, Object> getData() throws Exception{
-        if(this.getMapItem("BILL_NUM") == this.getSubschema("VDITM").getMapItem("BILL_NUM")) {
+        if(this.getMapItem("Delivery") == this.getSubschema("VDITM").getMapItem("Delivery")) {
             return null;
         }
         DataGenerator dg = DataGenerator.getInstance();
@@ -41,30 +41,30 @@ public class SchemaVDHDR extends Schemas  {
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_NUM"));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_TYPE"));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_CAT"));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("BILL_DATE"));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("COMP_CODE"));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"CREATEDON",80));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getRowCount());
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("GN_CUSTOM"));
-        columns.put(this.getHeader()[cnt++],"C" + dg.getNumberBetween(1, 9).toString());
-        columns.put(this.getHeader()[cnt++],dg.getItem(1, 90, 9));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(dCateg),"DOC_CATEG",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",80));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],"K4");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",100));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(10000000,30000000),"PAYER",75));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("RATE_TYPE"));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("SALESEMPLY"));
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("SALESORG"));
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],this.getSubschema("VDITM").getMapItem("SOLD_TO"));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",80));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("BILL_NUM"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("BILL_TYPE"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("BILL_CAT"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("BILL_DATE"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("COMP_CODE"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"CREATEDON",80));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getRowCount());
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("GN_CUSTOM"));
+        columns.put(this.getMetaValues("header")[cnt++],"C" + dg.getNumberBetween(1, 9).toString());
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem(1, 90, 9));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(dCateg),"DOC_CATEG",80));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",80));
+        columns.put(this.getMetaValues("header")[cnt++],null);
+        columns.put(this.getMetaValues("header")[cnt++],"K4");
+        columns.put(this.getMetaValues("header")[cnt++],null);
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",100));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberBetween(10000000,30000000),"PAYER",75));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("RATE_TYPE"));
+        columns.put(this.getMetaValues("header")[cnt++],null);
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("SALESEMPLY"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("SALESORG"));
+        columns.put(this.getMetaValues("header")[cnt++],"1");
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getMapItem("SOLD_TO"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",80));
             
         this.setMap(columns);
         
@@ -101,6 +101,11 @@ public class SchemaVDHDR extends Schemas  {
     
     @Override
     public Integer getDefaultPrimaryKey() {
+        return 1;
+    }
+    
+    @Override
+    public Integer getRandomRowCount() {
         return 1;
     }
     

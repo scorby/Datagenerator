@@ -51,22 +51,11 @@ public class SchemaVAHDR extends Schemas  {
         
         Map<String, Object> columns = new HashMap<>();        
         columns.put(this.getMetaValues("header")[cnt++],this.getNextPrimaryKey());
-        if(this.getSubschema("VAITM").getNetvalue() < 0) {
-            columns.put(this.getMetaValues("header")[cnt++],"L"); //DocCa
-        } else {
-            if(this.getSubschema("VAITM").getMapItem("Prb") != "100") {
-                columns.put(this.getMetaValues("header")[cnt++],"B"); //DocCa
-            } else {
-                if(this.getSubschema("VAITM").getMapItem("Ret") == "X") {
-                    columns.put(this.getMetaValues("header")[cnt++],"K"); //DocCa
-                } else {
-                    columns.put(this.getMetaValues("header")[cnt++],"C"); //DocCa
-                }
-            }
-        }
-        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)this.getSubschema("VAITM").getMapItem("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1])*(-1), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Created on
+        columns.put(this.getMetaValues("header")[cnt++],dg.getRange(docCa)); //DocCa
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31))); //Created on
         columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //time
         columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
+        
         if(columns.get("DocCa") == "B") {
             columns.put(this.getMetaValues("header")[cnt++],columns.get("Created on")); //Valid fr
             columns.put(this.getMetaValues("header")[cnt++],dg.getDate(9999, 12, 31)); //Valid to
@@ -96,9 +85,12 @@ public class SchemaVAHDR extends Schemas  {
                 break;     
         }
         columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("ordrs", cnt-1, this.getCurrentRow(), dg.getItem("B0" + dg.getNumberUpTo(9).toString(),0.7,null))); //OrdRs
-        
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getNetvalue()); //Net valeue
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Curr.")); //Curr
+        if (columns.get("DocCa") == "L") {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(-75.7083, 49.7340)); //Net val
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(25664.25, 105343.7039)); //Net val
+        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(curr), this.getMetaValues("header")[cnt - 1], 0.05)); //Curr
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(sorg), this.getMetaValues("header")[cnt - 1], 0.05)); //SOrg
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(dchl), this.getMetaValues("header")[cnt - 1], 0.05)); //DChl
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberUpTo(9)*10,this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Dv
@@ -125,7 +117,11 @@ public class SchemaVAHDR extends Schemas  {
         } else {
             columns.put(this.getMetaValues("header")[cnt++],null); //OrBit
         }
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Prb")); //Prb
+        if (columns.get("DocCa") == "B") {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getNumberUpTo(9)*10); //Prb
+        }else {
+            columns.put(this.getMetaValues("header")[cnt++],100); //Prb
+        }
         if ("100".equals(columns.get("Prb").toString())) {
             columns.put(this.getMetaValues("header")[cnt++],dg.getRandomChars(2, 10) + "/" + dg.getNumberUpTo(10000).toString()); //Order number
         }else {
@@ -160,7 +156,7 @@ public class SchemaVAHDR extends Schemas  {
         } else if (columns.get("DocCa") == "K") {
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem("B0B",0.50,"B0E")); //Usage
         } else {
-            columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Usage")); //Usage
+            columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("Usage", cnt-1, this.getCurrentRow(), "B" + dg.getNumberBetween(10, 99).toString())); //Usage
         }
         if (columns.get("DocCa") == "C") {
             columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //MatAvDt
@@ -204,10 +200,7 @@ public class SchemaVAHDR extends Schemas  {
 
     @Override
     public Integer getRandomRowCount() {
-        if(this.getSubschema("VAITM").getCurrentRow() == 1) {
-            return 1;
-        }
-        return 0;
+        return 1;
     }
     
     @Override
@@ -215,6 +208,9 @@ public class SchemaVAHDR extends Schemas  {
         return 1;
     }
     
+    private void setTableData(Map<String, List<Object>> map) {
+        
+    }
     
     private enum docCateg {
         B,

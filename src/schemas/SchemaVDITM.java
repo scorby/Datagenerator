@@ -30,132 +30,136 @@ public class SchemaVDITM extends Schemas {
     @Override
     public Map<String, Object> getData() throws Exception{
         DataGenerator dg = DataGenerator.getInstance();
+        TableData tData = TableData.getInstance();
+        int foreignKey = 10000;
         
         //Definition of MasterData
-        String[] rType = {"KZ","M"};
-        String[] cGrp = {"102","103","104","106"};
-        String[] cGrp2 = {"1","2","3"};
-        String[] dCateg = {"B", "C", "G", "H", "L"};
-        String[] condprun = {"TO","ST","MIN","M3","STD"};
-        String[] matlgrp2 = {"B12","B13"};
-        String[] matlgrp4 = {"702","803","A02","BDB","CBN","CDN","CEN","CKO"};
-        String[] matlgrp5 = {"702","B01","B04","B10","B11"};
-        String[] costArea = {"C01","C02","C03","C04","C05"};
+        String[] bil = {"A","C",null};
+        String[] uom = {"M3","MIN","TO","KG"};
+        String[] curr = {"EUR","GBP","US"};
+        String[] order = {"01","02","03"};
         
-        if(this.getParentSchema("VAITM").getMapItem("DOC_NUMBER") != this.getMapItem("REFER_DOC")) {
+        Map<String, Double> prio = new HashMap<>();
+        prio.put("0", 0.705);
+        prio.put("1", 0.805);
+        prio.put("2", 0.940);
+        prio.put("3", 0.996);
+        prio.put("11", 1.0);
+        
+        if(this.getCurrentRow() == 1) {
+            this.setForeignKey(foreignKey++);
             this.setPrimaryKey(this.getDefaultPrimaryKey());
-            if(this.getForeignKey() == null) {
-                this.setForeignKey(140500);
-            } else {
-                this.setForeignKey(this.getForeignKey() + 1);
+        } else {
+            if(dg.getNumber(2.5758,4.4582) > this.getRowCount()){
+                this.setForeignKey(foreignKey++);
             }
         }
+        
+        this.setCurrentRow();
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
-        columns.put(this.getHeader()[cnt++],this.getForeignKey());
-        columns.put(this.getHeader()[cnt++],this.getNextPrimaryKey().toString() + "0");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(rType, 100),"BILL_TYPE",50));
-        columns.put(this.getHeader()[cnt++],"I");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"BILL_DATE",80));
-        columns.put(this.getHeader()[cnt++],dg.getItem(dCateg,100));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 15));
-        columns.put(this.getHeader()[cnt++],dg.getItem(condprun,100));
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(2418000, 2419000),"BILLTOPRTY",70));
-        columns.put(this.getHeader()[cnt++],dg.getCompCode());
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 9).toString() + "00");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(1, 20),"COSTCENTER",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(costArea,100),"CO_AREA",80));
-        columns.put(this.getHeader()[cnt++],dg.getDateBetween((Date) this.getParentSchema("VAITM").getMapItem("CREATEDON"), dg.getDate(2013,12,31)));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 15));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"",80));
-        columns.put(this.getHeader()[cnt++],dg.getItem(1, 90, 9));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue("S" + dg.getNumberBetween(1, 9).toString(),"DIVISION",90));
-        columns.put(this.getHeader()[cnt++],"S0");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("GN_CUSTOM"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("CUST_GROUP"));
-        columns.put(this.getHeader()[cnt++],dg.getItem(cGrp, 25));
-        columns.put(this.getHeader()[cnt++],dg.getItem(cGrp2, 10));
-        columns.put(this.getHeader()[cnt++],dg.getItem(dg.getCustGrp(),10,null));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(dCateg, 100),"DOC_CATEG",50));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"DOC_CURRCY",90));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 25));
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],"K4");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 300000));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(0, 40000));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 10000));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItemCateg(),"ITEM_CATEG",50));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"LOC_CURRCY",90));   
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(100,900),"MATERIAL",75));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(100,900),"MATL_GRP_1",75));
-        columns.put(this.getHeader()[cnt++],dg.getItem(matlgrp2, 10));
-        columns.put(this.getHeader()[cnt++],dg.getItem("R01",5,null));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(matlgrp4,20),"MATL_GRP_4",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(matlgrp5,20),"MATL_GRP_5",80));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 10000));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 4000000));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 10));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1,10));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(10000000,30000000),"PAYER",75));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(100, 110),"PLANT",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"PRICE_DATE",80));
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(110043601,230043601),"PROD_HIER",70));
-        columns.put(this.getHeader()[cnt++],"G1");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(rType, 100),"RATE_TYPE",50));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000));
-        columns.put(this.getHeader()[cnt++],"B1");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("DOC_NUMBER"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("S_ORD_ITEM"));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 1000));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SALESEMPLY")); //Sales Emply
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SALESORG")); //Sales Org
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SALES_GRP"));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue("OF" + dg.getNumberBetween(1, 12).toString(),"SALES_OFF",80));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 1000));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"SERV_DATE",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue("SP" + dg.getNumberBetween(1, 15).toString(),"SHIP_POINT",70));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SHIP_TO"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SOLD_TO"));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLocCurrency(),"STAT_CURR",90)); 
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"STAT_DATE",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue("LO" + dg.getNumberBetween(1, 20).toString(),"STOR_LOC",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"ST_UP_DTE",80));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SUBTOTAL_1"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SUBTOTAL_2"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SUBTOTAL_3"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SUBTOTAL_4"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SUBTOTAL_5"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAITM").getMapItem("SUBTOTAL_6"));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000));
-        columns.put(this.getHeader()[cnt++],dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)));
-        columns.put(this.getHeader()[cnt++],"SD");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],null);
+        columns.put(this.getMetaValues("header")[cnt++],this.getForeignKey()); //Delivery
+        columns.put(this.getMetaValues("header")[cnt++],this.getNextPrimaryKey().toString() + "0"); //Item
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("ItCa")); //ItCa
+        columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
+        columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Time
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)this.getSubschema("VAITM").getMapItem("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1])*(-1), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Created on
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Material")); //Material
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Material entered")); //Material entered
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Matl Group")); //Matl Group
+        if(this.getCurrentRow() == 1) {
+            columns.put(this.getMetaValues("header")[cnt++],"000" + dg.getNumberUpTo(9)); //SLoc
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null); //SLoc
+        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Customer material number")); //Customer material number
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Product hierarchy")); //Product hierarchy
+        
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(), this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //Material
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Material entered", columns.get("Material").toString())); //Material entered
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Matl group", columns.get("Material").toString())); //Material group
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Description", columns.get("Material").toString())); //Description
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("ItCa", columns.get("Material").toString())); //ItCa
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("X",0.15,null));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(bil),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //BilRl
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(dg.getRandomChars(2),0.05,null),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Rj
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberText(12),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Product Hierarchy
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(uom),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Uom
+        columns.put(this.getMetaValues("header")[cnt++],1); //onversion factor
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("UoM")); //Bun
+
+        //Delivery quantity
+        //BUn
+        //SU
+        //Net weight
+        //Gross weight
+        //WUn
+        //Volume
+        //Overdel. Tol.
+        //Underdel.Tol.
+        //Mat.Av.Dt.
+        //Qty (stckpg unit)
+        //Description
+        //OriginDoc.
+        //Item
+        //Ref.doc.
+        //RefItm
+        //U
+        //PckID
+        //MvT
+        //MTy
+        //RqTy
+        //PlTyp
+        //MTyp
+        //Preceding document has resulted from ref
+        //Tot.
+        //Av
+        //BusA
+        //SOff.
+        //SGrp
+        //DChl
+        //Dv
+        //S
+        //Chngd on
+        //pack
+        //MG 2
+        //MG 5
+        //DocCa
+        //COAr
+        //Prof. Seg.
+        //Profit Ctr
+        //A
+        //ReqCl
+        //Credit active
+        //Configuration
+        //Usage
+        //ObjNo Hdr
+        //ObjNo Item
+        //Internal field/ Do not use / LFIMG in float / MUM
+        //Internal field/ Do not use / LGMNG in float / MUM
+        //per
+        //UoM
+        //Net price
+        //Net Value
+        //Mvt
+        //MatFrtGp
+        //Stag. Time
+        //Spec. Stk Valuation
+        //Spec.Stock No.
+        //Current quantity
+        //Qty in OPUn
+        //Sales Value
+        //Credit price
+        //Not relevant for WMS
+
         
         
         this.setMap(columns);
         
+        if(this.getRowCount() == this.getCurrentRow()) {
+            this.dropMasterData("Net value");
+        }
         return columns;
     
     }
@@ -166,9 +170,9 @@ public class SchemaVDITM extends Schemas {
     }
     
     @Override
-    public Integer getRandomRowCount () {
+    public Integer getRandomRowCount() {
         DataGenerator dg = DataGenerator.getInstance();
-        this.rowCount = dg.getItem(1,80,0);
+        this.rowCount = dg.getNumber(1.2830,0.98168);
         return this.rowCount;
     }
     

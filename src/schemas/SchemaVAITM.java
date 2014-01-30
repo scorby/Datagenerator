@@ -20,6 +20,7 @@ public class SchemaVAITM extends Schemas {
     private Integer primaryKey = 0;
     private Integer rowCount = 1;
     
+    
     @Override
     public void setUniqueNumber() {
         DataGenerator dg = DataGenerator.getInstance();
@@ -31,128 +32,187 @@ public class SchemaVAITM extends Schemas {
     public Map<String, Object> getData() throws Exception{
         
         DataGenerator dg = DataGenerator.getInstance();
+        TableData tData = TableData.getInstance();
+        int foreignKey = 100;
         
         //Definition of MasterData
-        String[] orderprb = {"25","50","75","100"};
-        String[] prockey = {"1","2"};
-        String[] condprun = {"TO","ST","MIN","M3","STD"};
-        String[] matlgrp2 = {"B12","B13"};
-        String[] matlgrp4 = {"702","803","A02","BDB","CBN","CDN","CEN","CKO"};
-        String[] matlgrp5 = {"702","B01","B04","B10","B11"};
-        String[] unlpoint = {"3","5","Unloadingpoint"};
-        String[] reasonrej = {"B1","Z1","Y0"};
+        String[] bil = {"A","C",null};
+        String[] uom = {"M3","MIN","TO","KG"};
+        String[] curr = {"EUR","GBP","US"};
+        String[] order = {"01","02","03"};
         
-        if(this.getParentSchema("VAHDR").getMapItem("DOC_NUMBER") != this.getMapItem("DOC_NUMBER")) {
+        Map<String, Double> prio = new HashMap<>();
+        prio.put("0", 0.705);
+        prio.put("1", 0.805);
+        prio.put("2", 0.940);
+        prio.put("3", 0.996);
+        prio.put("11", 1.0);
+        
+        if(this.getCurrentRow() == 1) {
+            this.setForeignKey(foreignKey++);
             this.setPrimaryKey(this.getDefaultPrimaryKey());
         }
         
+        this.setCurrentRow();
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DOC_NUMBER"));
-        columns.put(this.getHeader()[cnt++],dg.getItem("A", 95,"C"));
-        columns.put(this.getHeader()[cnt++],this.getNextPrimaryKey().toString() + "0");
-        columns.put(this.getHeader()[cnt++],"C");
-        columns.put(this.getHeader()[cnt++],"C");
-        columns.put(this.getHeader()[cnt++],"C");
-        columns.put(this.getHeader()[cnt++],"C");
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("QUOT_FROM"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DOC_TYPE"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("ORD_REASON"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("QUOT_TO"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("COMP_CODE"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("BILL_BLOCK"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("LOC_CURRCY"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("SOLD_TO"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("RATE_TYPE"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("GN_CUSTOM"));
-        columns.put(this.getHeader()[cnt++],"C" + dg.getNumberBetween(1, 9).toString());
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("CUST_GRP1"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("CUST_GRP2"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("CUST_GRP3"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("CUST_GRP4"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("CUST_GRP5"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DEL_BLOCK"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("STAT_CURR"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DOC_CATEG"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("SALES_OFF"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("SALES_GRP"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("SALESORG"));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DISTR_CHAN"));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(1, 9).toString() + "00"); //Plant
-        columns.put(this.getHeader()[cnt++],dg.getItem(reasonrej, 25));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),50,null),"CH_ON",90)); //Ch_On
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(orderprb, 100),"ORDER_PROB",50));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 200000)); //-30000
-        columns.put(this.getHeader()[cnt++],"SD");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getItem(prockey, 100));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getItem("1",95,"2"));
-        columns.put(this.getHeader()[cnt++],dg.getItem("4020000000000",25,null));
-        columns.put(this.getHeader()[cnt++],dg.getDateBetween((Date) this.getParentSchema("VAHDR").getMapItem("CREATEDON"), dg.getDate(2013,12,31))); //40
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getLastName(),"CREATEDBY",75));
-        columns.put(this.getHeader()[cnt++],dg.getDateBetween(new Date(28800000),new Date(64800000)));
-        columns.put(this.getHeader()[cnt++],dg.getItem("G3",5,null));
-        columns.put(this.getHeader()[cnt++],dg.getItem("KG",95,"TO"));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 2000)); //-1000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 2000)); //-1000
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(condprun,100),"COND_PR_UN",80));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],"1"); //50
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 2000)); //-1000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000)); //-7000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000)); //-7000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000)); //-7000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000)); //-7000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000)); //-7000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 400000)); //-7000
-        columns.put(this.getHeader()[cnt++],"0");
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getStorLoc(),"STOR_LOC",50));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 1000)); //-1000
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(Integer.toString(dg.getNumberBetween(1, 8)) + "0" + Integer.toString(dg.getNumberBetween(1, 8)),"MATL_GROUP",80));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(100000,108000));
-        columns.put(this.getHeader()[cnt++],dg.getNumberBetween(100000,108000));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(condprun,100),"COND_PR_UN",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(100,900),"MATL_GRP_1",75));
-        columns.put(this.getHeader()[cnt++],dg.getItem(matlgrp2, 10));
-        columns.put(this.getHeader()[cnt++],dg.getItem("R01",5,null));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(matlgrp4,20),"MATL_GRP_4",80));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItem(matlgrp5,20),"MATL_GRP_5",80));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 300000)); //-2000
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(0, 40000));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(8000, 2000000));
-        columns.put(this.getHeader()[cnt++],dg.getCurrency(1, 250000)); //-100000
-        columns.put(this.getHeader()[cnt++],dg.getItem(unlpoint, 10));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(10000000,30000000),"BILLTOPRTY",75));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(10000000,30000000),"PAYER",75));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(1010043601,1030043601),"SHIP_TO",60));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(110043601,230043601),"PROD_HIER",70));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getNumberBetween(104856,204856),"FORWAGENT",85));
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getItemCateg(),"ITEM_CATEG",50));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("SALESEMPLY")); //sales Emply
-        columns.put(this.getHeader()[cnt++],this.getLastMapValue(dg.getRoute(),"ROUTE",85));
-        columns.put(this.getHeader()[cnt++],dg.getItem("E",5,null));
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DIV_HEAD").toString().substring(0, 1) + dg.getNumberBetween(1, 5).toString());
-        columns.put(this.getHeader()[cnt++],this.getParentSchema("VAHDR").getMapItem("DIV_HEAD"));
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],"1");
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],null);
-        columns.put(this.getHeader()[cnt++],"0");
-        columns.put(this.getHeader()[cnt++],dg.getItem("1",90,"25"));
-        columns.put(this.getHeader()[cnt++],dg.getItem("1",90,"1000"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getForeignKey()); //Sales Doc
+        columns.put(this.getMetaValues("header")[cnt++],this.getNextPrimaryKey().toString() + "0"); //Item
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(), this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //Material
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Material entered", columns.get("Material").toString())); //Material entered
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Matl Group", columns.get("Material").toString())); //Material group
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Description", columns.get("Material").toString())); //Description
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("ItCa", columns.get("Material").toString())); //ItCa
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("X",0.15,null));
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(bil),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //BilRl
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(dg.getRandomChars(2),0.05,null),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Rj
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberText(12),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Product Hierarchy
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(uom),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Uom
+        columns.put(this.getMetaValues("header")[cnt++],1); //onversion factor
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("UoM")); //Bun
+        String poItem = new String();
+        for(int i = 1; i<=(6-columns.get("Item").toString().length() );i++) {
+            poItem = poItem + "0";
+        }
+        columns.put(this.getMetaValues("header")[cnt++],poItem+columns.get("Item").toString()); //POItem
+        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Customer Material Number", columns.get("Material").toString())); //Customer Material Number
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem(this.getMasterData("Usage", cnt-1, this.getCurrentRow(), "B" + dg.getNumberBetween(10, 99).toString()),0.014,"B0B")); //Usage
+        columns.put(this.getMetaValues("header")[cnt++],dg.getNumber(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Overdel Tol
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Overdel. Tol.")); //Underdel Tol
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberUpTo(9)*10,this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Dv
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberBetween(1000, 9999),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //BusA
+        if(this.getCurrentRow() == 1) {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getNumberUpTo(9)*10,0.34,100)); //Prb
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue("Prb"));
+        }
         
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getCurrency(6149.3250, 39806.9660),0.05,dg.getCurrency(-182.1036, 146.5462))); //Net value
+//        if(this.getRowCount() > 1) {
+//            Double val = dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]));
+//            Double parentVal = Double.parseDouble(this.getParentSchema("VAHDR").getMapItem("Net value").toString());
+//            Double sum = 0d;
+//            for(Object d : this.getMasterData("Net value").toArray()) {
+//                sum = sum + Double.parseDouble(d.toString());
+//            }
+//            if(sum+val > parentVal) {
+//                columns.put(this.getMetaValues("header")[cnt++],parentVal-sum);
+//            } else {
+//                columns.put(this.getMetaValues("header")[cnt++],val);
+//            }
+//            this.setMasterData("Net value", columns.get("Net value"));
+//        } else {
+//            columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAHDR").getMapItem("Net value"));
+//        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(curr), this.getMetaValues("header")[cnt - 1], 0.05)); //Curr
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),1)); //Order Quantity
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Order Quantity")); //Required deliv. qty
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Order Quantity")); //Cumul.confirmed qty
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("UoM")); //Su
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),2)); //Gross Weight
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Gross weight")); //Net Weight
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem("TO",0.66,"KG"),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //WUn
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("X",0.33,null)); //U
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("B",0.29,null)); //ComRI
+        columns.put(this.getMetaValues("header")[cnt++],dg.getRange(prio)); //Prio
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("BusA")); //PInt
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("BusA")); //ShpT
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("Route", cnt-1, this.getCurrentRow(), "GB" + this.fillString(dg.getNumberUpTo(9999).toString(), "0", 4))); //Route
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31)),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Created on
+        columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
+        columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Time
+        if(columns.get("ComRl") != null && columns.get("ComRl") != "B") {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //BOM key dt.
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null); //BOM key dt.
+        }
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //net Price
+        if("MIN".equals(columns.get("UoM").toString())) {
+            columns.put(this.getMetaValues("header")[cnt++],60); //per
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],1); //per
+        }
+        columns.put(this.getMetaValues("header")[cnt++], columns.get("UoM")); //UoM
+        if(Double.parseDouble(columns.get("Net value").toString()) < 0) {
+            columns.put(this.getMetaValues("header")[cnt++],"X"); //Ret
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null); //Ret
+        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("AAG", cnt-1, this.getCurrentRow(), dg.getNumberBetween(10, 99).toString())); //AAG
+        if(columns.get("Ret") != null && "X".equals(columns.get("Ret").toString())) {
+            columns.put(this.getMetaValues("header")[cnt++],"A"); //OK
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null); //OK
+        }
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),Double.parseDouble(columns.get("Net value").toString()))); //Cost
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),Double.parseDouble(columns.get("Net value").toString()))); //Value of inv.gross
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),Double.parseDouble(columns.get("Net value").toString()))); //Value w/o freight
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Value of all bills
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Net value")); //Freight cost and r
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Subtotal 5
+        columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Bonus paid
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //changed on
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("Profit Ctr", cnt-1, this.getCurrentRow(), this.fillString(dg.getNumberUpTo(1000000000).toString(), "0", 10))); //Profit Center
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("MG 2", cnt-1, this.getCurrentRow(), dg.getItem("B" + this.fillString(dg.getNumberUpTo(99).toString(), "0", 2),0.33,null))); //MG 2
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("MG 3", cnt-1, this.getCurrentRow(), dg.getItem("B" + this.fillString(dg.getNumberUpTo(99).toString(), "0", 2),0.20,null))); //MG 3
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("MG 4", cnt-1, this.getCurrentRow(), dg.getItem("B" + this.fillString(dg.getNumberUpTo(99).toString(), "0", 2),0.08,null))); //MG 4
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("MG 5", cnt-1, this.getCurrentRow(), "B" + this.fillString(dg.getNumberUpTo(99).toString(), "0", 2))); //MG 5
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("ZGB1",0.061,null)); //Reasn
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("E",0.053,null)); //S
+        if(columns.get("Ret") != null && "X".equals(columns.get("Ret").toString())) {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(-13.9147, 17.6974)); //Credit Price
+            columns.put(this.getMetaValues("header")[cnt++],null); //Credit active
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getCurrency(86.2176, 65.1477)); //Credit Price
+            columns.put(this.getMetaValues("header")[cnt++],"X"); //Credit active
+        }
+        columns.put(this.getMetaValues("header")[cnt++],1); //Exchange Rate
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("A",0.568,null)); //MPr
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("PrCat", cnt-1, this.getCurrentRow(), dg.getItem(dg.getRandomChars(1).toUpperCase(),0.6294,null))); //PrCat
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getNumberBetween(100000000, 122213206),0.5036,0)); //Cost EastNo
+        if(!"0".equals(columns.get("Cost Est.No.").toString())) {
+            columns.put(this.getMetaValues("header")[cnt++],"PPC4"); //Costing Variant
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null); //Costing Variant
+        }
+        columns.put(this.getMetaValues("header")[cnt++],Double.parseDouble(columns.get("Net value").toString())*0.20); //Tax Amount
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),3)); //Distance
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("MI",0.6267,"KM")); //Dis
+        if(columns.get("Credit active") != null && "X".equals(columns.get("Credit active").toString())) {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getItem(order));
+            columns.put(this.getMetaValues("header")[cnt++],columns.get("Pint"));
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null);
+            columns.put(this.getMetaValues("header")[cnt++],null);            
+        }
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),3)); //Minimum
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),3)); //Maximum
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),3)); //Max Load
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),3)); //Min Load
+        if(columns.get("Credit active") != null && "X".equals(columns.get("Credit active").toString())) {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //First Load
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],null);
+        }
         this.setMap(columns);
         
+        if(this.getRowCount() == this.getCurrentRow()) {
+            this.dropMasterData("Net value");
+        }
         return columns;
     }
     
     @Override
     public String getName() {
         return this.getClass().getSimpleName().replace("Schema", "");
+    }
+
+    @Override
+    public Integer getRandomRowCount() {
+        DataGenerator dg = DataGenerator.getInstance();
+        this.rowCount = dg.getNumber(4.1298, 6.1897);
+        return this.rowCount;
     }
     
     @Override

@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.supercsv.prefs.CsvPreference;
 import java.util.Random;
+import org.supercsv.exception.SuperCsvCellProcessorException;
 import org.supercsv.io.CsvMapWriter;
 import schemas.Schemas;
 
@@ -100,7 +101,7 @@ public class CSVWriter {
 
         //write Header
         if(!schema.headerWritten) {
-            schema.mapWriter.writeHeader(schema.getHeader());
+            schema.mapWriter.writeHeader(schema.getMetaValues("header"));
             schema.headerWritten = true;
         }
         
@@ -108,23 +109,31 @@ public class CSVWriter {
     
     private void writeData(Schemas schema) throws Exception {
 
-        // write the data
+        //Write all Records
         Integer rowCount = schema.getRandomRowCount();
         for(int i = 1;i<=rowCount;i++) 
         {
             if(!this.checkConstraints(schema)) {
                 return;
             }
+            
+            //Write Record for Current Schema
             this.csvMap = schema.getData();
-           
             if(this.csvMap != null) { 
-                schema.mapWriter.write(this.csvMap, schema.getHeader(), schema.getProcessors());
-               
+                try {
+                    schema.mapWriter.write(this.csvMap, schema.getMetaValues("header"), schema.getProcessors());
+                } catch(SuperCsvCellProcessorException e) {
+                    throw new Exception("Schema: "+ schema.getName() + "\nDescription: " + e.getLocalizedMessage() + "\nColumn: " + e.getCsvContext().getColumnNumber());
+                    
+                } 
+                
                 schema.setCurrentRow();
                 this.setOverallSize();
                 this.currentRows++;
             }
             this.addSchemaMap(schema);
+            
+            //Create Child Schema
             if(schema.getSubschemas().size() > 0 && !schema.getBottomTop()) {
                 for (Schemas s:schema.getSubschemas().values()) {
                     this.writeSchema(s);
@@ -132,14 +141,14 @@ public class CSVWriter {
 
             }
 
-        }
-        
-        if(schema.getParentSchemas().size() > 0 && rowCount > 0) {
-            for(Schemas s:schema.getParentSchemas().values()) {
-                if(s.getBottomTop()) {
-                    this.writeSchema(s);
+            //Create Parent Schema
+            if(schema.getParentSchemas().size() > 0 && rowCount > 0) {
+                for(Schemas s:schema.getParentSchemas().values()) {
+                    if(s.getBottomTop()) {
+                        this.writeSchema(s);
+                    }
+
                 }
-                
             }
         }
         
