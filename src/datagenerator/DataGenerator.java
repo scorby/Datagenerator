@@ -11,26 +11,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.io.FileWriter;
-
 import interfaces.*;
-import java.io.File;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
-import java.util.spi.CurrencyNameProvider;
-import javax.swing.JProgressBar;
 
-import org.supercsv.cellprocessor.*;
-import org.supercsv.cellprocessor.constraint.*;
-import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.io.*;
-import org.supercsv.prefs.CsvPreference;
 /**
  *
  * @author Martin Kleehaus
@@ -236,6 +222,15 @@ public class DataGenerator {
      */
     public String getCity() {
             return getItem(addressDataValues.getCities());
+    }
+    
+    /**
+     * Generates a random country code value
+     * 
+     * @return country code as a string
+     */
+    public String getCountryCode() {
+            return getItem(addressDataValues.getCountryCode());
     }
 
     /**

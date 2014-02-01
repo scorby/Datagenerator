@@ -7,6 +7,7 @@ package schemas;
  */
 
 import datagenerator.DataGenerator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,52 +27,57 @@ public class SchemaVCHDR extends Schemas  {
     
     @Override
     public Map<String, Object> getData() throws Exception{
-        if(this.getMapItem("DELIV_NUMB") == this.getSubschema("VCITM").getMapItem("DELIV_NUMB")) {
+        if(!this.getSubschema("VDITM").isNextForeignKeyCheck()) {
             return null;
         }
+        
         DataGenerator dg = DataGenerator.getInstance();
+        TableData tData = TableData.getInstance();
         
-        this.setPrimaryKey(Integer.parseInt(this.getSubschema("VCITM").getMapItem("DELIV_NUMB").toString()));
-        
+        this.setCurrentRow();
         int cnt = 0;
         
-        
-        Map<String, Object> columns = new HashMap<>();  
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("DELIV_NUMB"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("ACT_GI_DTE"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("BILLTOPRTY"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("BILL_BLOCK"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("COMP_CODE"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2013,12,31)),"CREATEDON",80));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("CREDITOR"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("CUST_GROUP"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("DEL_BLOCK"));
-        columns.put(this.getMetaValues("header")[cnt++], dg.getCurrency(1, 2000));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getRowCount());
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("DEL_TYPE"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("DEL_WA_DH"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("DOC_CATEG"));
-        columns.put(this.getMetaValues("header")[cnt++], "K4");
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("FORWAGENT"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("GI_DATE"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("GN_R3_SSY"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("INCOTERMS"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("INCOTERMS2"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("LOAD_PT"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("NET_WGT_DL"));
-        columns.put(this.getMetaValues("header")[cnt++], dg.getNumberBetween(1, 100));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("PAYER"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("RECORDMODE"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("ROUTE"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("SALESEMPLY"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("SALESORG"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("SALES_DIST"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("SHIP_TO"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("SOLD_TO"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("UNIT_OF_WT"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("UNLOAD_PT"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("VOLUMEUNIT"));
-        columns.put(this.getMetaValues("header")[cnt++], this.getSubschema("VCITM").getMapItem("VOLUME_DL"));
+        Map<String, Object> columns = new HashMap<>();   
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("BillDoc"));
+        if(this.getSubschema("VCITM").getMapItem("Ret") == "X") {
+            columns.put(this.getMetaValues("header")[cnt++],"YI06"); //BillT
+            columns.put(this.getMetaValues("header")[cnt++],"L"); //BlCat
+            columns.put(this.getMetaValues("header")[cnt++],"M"); //DocCa
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],"YD03"); //BillT
+            columns.put(this.getMetaValues("header")[cnt++],"A"); //BlCat
+            columns.put(this.getMetaValues("header")[cnt++],"P"); //DocCa
+        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getMapItem("Curr")); //Curr
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("SOrg")); //SOrg
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("DChl")); //DChl
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("PriPr")); //PriPr
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("SC")); //SC
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getBaseDate()); //Billing Date
+        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("B6",0.21,"BC")); //PG
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getSubschema("VDITM").getParentSchema("VDHDR").getMapItem("SDst")); //SDst
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getSubschema("VDITM").getParentSchema("VDHDR").getMapItem("IncoT")); //IncoT
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("PayT", cnt-1, this.getCurrentRow(), "F" + this.fillString(dg.getNumberUpTo(999).toString(), "0", 3))); //PayT
+        columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("AAG", cnt-1, this.getCurrentRow(), "0" + dg.getNumberUpTo(9).toString())); //AAG
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("Ctry")); //DstC
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("Rg")); //Rg        
+        Double sum = 0d;
+        for(Object d : this.getSubschema("VCITM").getMasterData("Net value for Header").toArray()) {
+            sum = sum + Double.parseDouble(d.toString()); //Net value
+        }
+        columns.put(this.getMetaValues("header")[cnt++],sum); //Net value
+        columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
+        columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Time
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getBaseDate()); //Created on
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Sold-to pt")); //Payer
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Sold-to pt")); //Sold-to
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem("GB" + this.fillString(dg.getNumberUpTo(217915751).toString(),"0",9),0.17,null), this.getMetaValues("header")[cnt-1], this.parseDouble(this.getMetaValues("change")[cnt-1]))); //Vat Registration
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("Dv")); //Dv
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("CCAr")); //CCAr
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Cred acct")); //Cred acct
+        columns.put(this.getMetaValues("header")[cnt++],Double.parseDouble(columns.get("Net value").toString()) * 0.2); //Tax amount
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //TranslDate
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("Product hierarchy").toString().substring(0, 5)); //Product hierarchy
         
         this.setMap(columns);
         

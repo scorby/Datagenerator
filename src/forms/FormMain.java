@@ -250,8 +250,8 @@ public class FormMain extends javax.swing.JFrame {
         VCHDR.setSubschema("VCITM",VCITM);
         
         VAITM.setParentSchema("VAHDR",VAHDR);
-        VAITM.setSubschema("VCITM",VCITM);
         VAITM.setSubschema("VDITM",VDITM);
+        VAITM.setSubschema("VCITM",VCITM);
         
         VDITM.setParentSchema("VAITM",VAITM);
         VDITM.setParentSchema("VDHDR",VDHDR);

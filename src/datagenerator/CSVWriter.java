@@ -132,14 +132,6 @@ public class CSVWriter {
                 this.currentRows++;
             }
             this.addSchemaMap(schema);
-            
-            //Create Child Schema
-            if(schema.getSubschemas().size() > 0 && !schema.getBottomTop()) {
-                for (Schemas s:schema.getSubschemas().values()) {
-                    this.writeSchema(s);
-                }
-
-            }
 
             //Create Parent Schema
             if(schema.getParentSchemas().size() > 0 && rowCount > 0) {
@@ -149,6 +141,14 @@ public class CSVWriter {
                     }
 
                 }
+            }
+            
+            //Create Child Schema
+            if(schema.getSubschemas().size() > 0 && !schema.getBottomTop()) {
+                for (Schemas s:schema.getSubschemas().values()) {
+                    this.writeSchema(s);
+                }
+
             }
         }
         

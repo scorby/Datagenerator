@@ -29,137 +29,179 @@ public class SchemaVDITM extends Schemas {
     
     @Override
     public Map<String, Object> getData() throws Exception{
+        if(this.getParentSchema("VAITM").getMapItem("Ret") == "X") {
+            return null;
+        }
         DataGenerator dg = DataGenerator.getInstance();
         TableData tData = TableData.getInstance();
         int foreignKey = 10000;
+        Date baseDate = new Date();
         
-        //Definition of MasterData
-        String[] bil = {"A","C",null};
-        String[] uom = {"M3","MIN","TO","KG"};
-        String[] curr = {"EUR","GBP","US"};
-        String[] order = {"01","02","03"};
-        
-        Map<String, Double> prio = new HashMap<>();
-        prio.put("0", 0.705);
-        prio.put("1", 0.805);
-        prio.put("2", 0.940);
-        prio.put("3", 0.996);
-        prio.put("11", 1.0);
-        
-        if(this.getCurrentRow() == 1) {
-            this.setForeignKey(foreignKey++);
-            this.setPrimaryKey(this.getDefaultPrimaryKey());
-        } else {
-            if(dg.getNumber(2.5758,4.4582) > this.getRowCount()){
-                this.setForeignKey(foreignKey++);
-            }
-        }
+        Map<String, Double> convert = new HashMap<>();
+        convert.put("M3TO",2.3);
+        convert.put("M3KG",0.001);
+        convert.put("MINTO",0.000001);
+        convert.put("MINKG",0.001);
+        convert.put("TOTO",1.0);
+        convert.put("TOKG",1000.0);
+        convert.put("KGTO",0.001);
+        convert.put("KGKG",1.0);
         
         this.setCurrentRow();
+        if(this.getCurrentRow() == 1) {
+            this.setPrimaryKey(this.getDefaultPrimaryKey());
+            this.setGrossWeight(0d, false);
+            this.setForeignKey(foreignKey++);
+        } 
+  
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
         columns.put(this.getMetaValues("header")[cnt++],this.getForeignKey()); //Delivery
         columns.put(this.getMetaValues("header")[cnt++],this.getNextPrimaryKey().toString() + "0"); //Item
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("ItCa")); //ItCa
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("ItCa")); //ItCa
         columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
         columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Time
-        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)this.getSubschema("VAITM").getMapItem("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1])*(-1), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Created on
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Material")); //Material
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Material entered")); //Material entered
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Matl Group")); //Matl Group
+        if(this.getCurrentRow() == 1) {
+            baseDate = dg.getDate((Date)this.getParentSchema("VAITM").getMapItem("Created on"), 4.975609756, 11.59880111);
+            this.setBaseDate(baseDate);
+            columns.put(this.getMetaValues("header")[cnt++],baseDate); //Created on
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getDate(baseDate, this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Created on            
+        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Material")); //Material
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Material entered")); //Material entered
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Matl Group")); //Matl Group
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("PInt")); //PInt
         if(this.getCurrentRow() == 1) {
             columns.put(this.getMetaValues("header")[cnt++],"000" + dg.getNumberUpTo(9)); //SLoc
         } else {
             columns.put(this.getMetaValues("header")[cnt++],null); //SLoc
         }
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Customer material number")); //Customer material number
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Product hierarchy")); //Product hierarchy
-        
-        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(), this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //Material
-        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Material entered", columns.get("Material").toString())); //Material entered
-        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Matl group", columns.get("Material").toString())); //Material group
-        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Description", columns.get("Material").toString())); //Description
-        columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("ItCa", columns.get("Material").toString())); //ItCa
-        columns.put(this.getMetaValues("header")[cnt++],dg.getItem("X",0.15,null));
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(bil),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //BilRl
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(dg.getRandomChars(2),0.05,null),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Rj
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberText(12),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Product Hierarchy
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(uom),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Uom
-        columns.put(this.getMetaValues("header")[cnt++],1); //onversion factor
-        columns.put(this.getMetaValues("header")[cnt++],columns.get("UoM")); //Bun
-
-        //Delivery quantity
-        //BUn
-        //SU
-        //Net weight
-        //Gross weight
-        //WUn
-        //Volume
-        //Overdel. Tol.
-        //Underdel.Tol.
-        //Mat.Av.Dt.
-        //Qty (stckpg unit)
-        //Description
-        //OriginDoc.
-        //Item
-        //Ref.doc.
-        //RefItm
-        //U
-        //PckID
-        //MvT
-        //MTy
-        //RqTy
-        //PlTyp
-        //MTyp
-        //Preceding document has resulted from ref
-        //Tot.
-        //Av
-        //BusA
-        //SOff.
-        //SGrp
-        //DChl
-        //Dv
-        //S
-        //Chngd on
-        //pack
-        //MG 2
-        //MG 5
-        //DocCa
-        //COAr
-        //Prof. Seg.
-        //Profit Ctr
-        //A
-        //ReqCl
-        //Credit active
-        //Configuration
-        //Usage
-        //ObjNo Hdr
-        //ObjNo Item
-        //Internal field/ Do not use / LFIMG in float / MUM
-        //Internal field/ Do not use / LGMNG in float / MUM
-        //per
-        //UoM
-        //Net price
-        //Net Value
-        //Mvt
-        //MatFrtGp
-        //Stag. Time
-        //Spec. Stk Valuation
-        //Spec.Stock No.
-        //Current quantity
-        //Qty in OPUn
-        //Sales Value
-        //Credit price
-        //Not relevant for WMS
-
-        
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Customer material number")); //Customer material number
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Product hierarchy")); //Product hierarchy
+        if(this.getRowCount() > 1) {
+            Double val = dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]));
+            Double parentVal = Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Order Quantity").toString());
+            Double sum = 0d;
+            for(Object d : this.getMasterData("Delivery quantity").toArray()) {
+                sum = sum + Double.parseDouble(d.toString());
+            }
+            if(sum+val > parentVal) {
+                columns.put(this.getMetaValues("header")[cnt++],parentVal-sum); //Delivery quantity
+            } else {
+                columns.put(this.getMetaValues("header")[cnt++],val); //Delivery quantity
+            }
+            this.setMasterData("Delivery quantity", columns.get("Delivery quantity"));
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Order Quantity").toString())-dg.getCurrency(42.9352, 56.4912),0.647,this.getParentSchema("VAITM").getMapItem("Order Quantity")));
+        }
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("BUn")); //BUn
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("SU")); //SU
+        columns.put(this.getMetaValues("header")[cnt++],Double.parseDouble(columns.get("Delivery quantity").toString()) * convert.get(columns.get("SU") + this.getParentSchema("VAITM").getMapItem("WUn").toString())); //Gross Weight
+        this.setMasterData("Gross weight for Header", columns.get("Gross weight")); 
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Gross weight")); //Net weight
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("WUn")); //WUn
+        columns.put(this.getMetaValues("header")[cnt++],0); //Volume
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Overdel. Tol.")); //Overdel. Tol.
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Underdel.Tol.")); //Underdel.Tol.
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Mat.Av.Dt.")); //Mat.Av.Dt.
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Delivery Quantity")); //Qty (stckpg unit)
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Description")); //Description
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Sales Doc.")); //Refdoc
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Item")); //Refitm
+        columns.put(this.getMetaValues("header")[cnt++],null); //U
+        columns.put(this.getMetaValues("header")[cnt++],null); //PckID
+        columns.put(this.getMetaValues("header")[cnt++],null); //MvT
+        columns.put(this.getMetaValues("header")[cnt++],null); //MTy
+        columns.put(this.getMetaValues("header")[cnt++],null); //RqTy
+        columns.put(this.getMetaValues("header")[cnt++],null); //PlTyp
+        columns.put(this.getMetaValues("header")[cnt++],null); //MTyp
+        columns.put(this.getMetaValues("header")[cnt++],null); //Preceding document has resulted from ref
+        columns.put(this.getMetaValues("header")[cnt++],null); //Tot.
+        columns.put(this.getMetaValues("header")[cnt++],null); //Av
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("BusA")); //BusA
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("SOff.")); //SOff.
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("SGrp")); //SGrp
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("DChl")); //DChl
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Dv")); //Dv
+        columns.put(this.getMetaValues("header")[cnt++],null); //S
+        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //changed on
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("MG 2")); //MG 2
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("MG 3")); //MG 3
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("MG 4")); //MG 4
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("MG 5")); //MG 5
+        columns.put(this.getMetaValues("header")[cnt++],"C"); //DocCat
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("COAr")); //COAr
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Profit Ctr")); //Profit Ctr
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue("0" + dg.getNumberUpTo(99).toString(),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //ReqCl
+        columns.put(this.getMetaValues("header")[cnt++],"X"); //Credit active
+        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberUpTo(9999999).toString(),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Configuration
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Usage")); //Usage
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("per")); //per
+        columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("UoM")); //UoM
+        if(this.getRowCount() > 1) {
+            Double val = dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]));
+            Double parentVal = Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net price").toString());
+            Double sum = 0d;
+            for(Object d : this.getMasterData("Net price").toArray()) {
+                sum = sum + Double.parseDouble(d.toString());
+            }
+            if(sum+val > parentVal) {
+                columns.put(this.getMetaValues("header")[cnt++],parentVal-sum); //Net price
+            } else {
+                columns.put(this.getMetaValues("header")[cnt++],val); //Net price
+            }
+            this.setMasterData("Net price", columns.get("Net price")); 
+        } else {
+            double m = dg.getNumberBetween(10, 90)/100;
+            columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net price").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Net price")));
+        }
+        if(this.getRowCount() > 1) {
+            Double val = dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]));
+            Double parentVal = Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net value").toString());
+            Double sum = 0d;
+            for(Object d : this.getMasterData("Net value").toArray()) {
+                sum = sum + Double.parseDouble(d.toString());
+            }
+            if(sum+val > parentVal) {
+                columns.put(this.getMetaValues("header")[cnt++],parentVal-sum); //Net value
+            } else {
+                columns.put(this.getMetaValues("header")[cnt++],val); //Net value
+            }
+            this.setMasterData("Net value", columns.get("Net value")); 
+        } else {
+            double m = dg.getNumberBetween(10, 90)/100;
+            columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net value").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Net value")));
+        }
+        this.setMasterData("Net value for Header", columns.get("Net value")); 
+        columns.put(this.getMetaValues("header")[cnt++],null); //Mvt
+        columns.put(this.getMetaValues("header")[cnt++],null); //MatFrtGp
+        columns.put(this.getMetaValues("header")[cnt++],null); //Stag. Time
+        columns.put(this.getMetaValues("header")[cnt++],null); //Spec. Stk Valuation
+        columns.put(this.getMetaValues("header")[cnt++],null); //Spec.Stock No.
+        columns.put(this.getMetaValues("header")[cnt++],null); //Current quantity
+        columns.put(this.getMetaValues("header")[cnt++],null); //Qty in OPUn
+        columns.put(this.getMetaValues("header")[cnt++],null); //Sales Value
+        columns.put(this.getMetaValues("header")[cnt++],null); //Credit price
+        columns.put(this.getMetaValues("header")[cnt++],null); //Not relevant for WMS
         
         this.setMap(columns);
         
-        if(this.getRowCount() == this.getCurrentRow()) {
-            this.dropMasterData("Net value");
+        //Check if Child has new Parent
+        if(dg.getItem(1,0.4,0) == 1){
+            this.setForeignKey(foreignKey++);
+            this.setNextForeignKeyCheck(true);
+            this.dropMasterData("Gross weight for Header");
+        } else {
+            this.setNextForeignKeyCheck(false);
         }
+        
+        if(this.getRowCount() == this.getCurrentRow()) {
+            this.dropMasterData("Gross weight");
+
+        }
+        
         return columns;
     
     }

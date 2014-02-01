@@ -13,6 +13,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,9 +50,12 @@ public abstract class Schemas {
     private Integer countFiles = 1;
     public boolean headerWritten = false;
     private boolean bottomTop = false;
+    private boolean nextForeignKeyCheck = false;
     private final Map<String, List<Object>> MasterData = new HashMap<>();
     private final Map<String, List<Object>> MetaValues = new HashMap<>();
     private Double netvalue = 0d;
+    private Double grossweight = 0d;
+    private Date baseDate = new Date();
     
 //    public List<SchemaInterface> getSchemas() {
 //        
@@ -383,6 +387,34 @@ public abstract class Schemas {
            this.netvalue = this.netvalue + value;
        }
    }
+   
+   public Double getGrossWeight() {
+       return this.grossweight;
+   }
+   
+   public void setGrossWeight(Double value, boolean preserve) {
+       if(preserve) {
+           this.grossweight = value;
+       } else {
+           this.grossweight = this.grossweight + value;
+       }
+   }
+
+    public Date getBaseDate() {
+        return baseDate;
+    }
+
+    public void setBaseDate(Date baseDate) {
+        this.baseDate = baseDate;
+    }
+
+    public boolean isNextForeignKeyCheck() {
+        return nextForeignKeyCheck;
+    }
+
+    public void setNextForeignKeyCheck(boolean nextForeignKeyCheck) {
+        this.nextForeignKeyCheck = nextForeignKeyCheck;
+    }
             
     
     public abstract void setUniqueNumber();

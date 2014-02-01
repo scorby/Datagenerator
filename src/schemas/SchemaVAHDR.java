@@ -28,6 +28,9 @@ public class SchemaVAHDR extends Schemas  {
     
     @Override
     public Map<String, Object> getData() throws Exception{
+        if(!this.getSubschema("VAITM").isNextForeignKeyCheck()) {
+            return null;
+        }
         DataGenerator dg = DataGenerator.getInstance();
         TableData tData = TableData.getInstance();
         
@@ -50,7 +53,7 @@ public class SchemaVAHDR extends Schemas  {
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();        
-        columns.put(this.getMetaValues("header")[cnt++],this.getNextPrimaryKey());
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Sales Doc"));
         if(this.getSubschema("VAITM").getNetvalue() < 0) {
             columns.put(this.getMetaValues("header")[cnt++],"L"); //DocCa
         } else {
@@ -64,7 +67,7 @@ public class SchemaVAHDR extends Schemas  {
                 }
             }
         }
-        columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)this.getSubschema("VAITM").getMapItem("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1])*(-1), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Created on
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Created on")); //Created on
         columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //time
         columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
         if(columns.get("DocCa") == "B") {
@@ -96,8 +99,11 @@ public class SchemaVAHDR extends Schemas  {
                 break;     
         }
         columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("ordrs", cnt-1, this.getCurrentRow(), dg.getItem("B0" + dg.getNumberUpTo(9).toString(),0.7,null))); //OrdRs
-        
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getNetvalue()); //Net valeue
+        Double sum = 0d;
+        for(Object d : this.getSubschema("VAITM").getMasterData("Net value for Header").toArray()) {
+            sum = sum + Double.parseDouble(d.toString()); //Net valeue
+        }
+        columns.put(this.getMetaValues("header")[cnt++],sum); //Net value
         columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Curr.")); //Curr
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(sorg), this.getMetaValues("header")[cnt - 1], 0.05)); //SOrg
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(dchl), this.getMetaValues("header")[cnt - 1], 0.05)); //DChl
@@ -137,7 +143,7 @@ public class SchemaVAHDR extends Schemas  {
              columns.put(this.getMetaValues("header")[cnt++],null); //potyp
         }
         columns.put(this.getMetaValues("header")[cnt++],columns.get("Created on")); //PO Date
-        columns.put(this.getMetaValues("header")[cnt++],tData.getSoldto(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //sold-to pt
+        columns.put(this.getMetaValues("header")[cnt++],tData.getSoldto(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //Sold-to pt
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getLastName(),0.90,null)); //Name of the orderer
         columns.put(this.getMetaValues("header")[cnt++],tData.getSoldto("telephone", columns.get("Sold-to pt").toString()));
         columns.put(this.getMetaValues("header")[cnt++],columns.get("Created on")); //Last cont

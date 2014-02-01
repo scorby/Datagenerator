@@ -224,6 +224,15 @@ public class TableData {
         return null;
     }
     
+    public Object getUser(String attribute) {
+        DataGenerator dg = DataGenerator.getInstance();
+        if(this.user.containsKey(attribute)) {
+            int i = dg.getNumberUpTo(this.user.get(attribute).size());
+            return this.user.get(attribute).values().toArray()[i];
+        }
+        return null;
+    }
+    
     public void extendUser() {
         DataGenerator dg = DataGenerator.getInstance();
         String key = dg.getLastName() + "." + dg.getFirstName();

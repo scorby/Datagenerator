@@ -34,12 +34,23 @@ public class SchemaVAITM extends Schemas {
         DataGenerator dg = DataGenerator.getInstance();
         TableData tData = TableData.getInstance();
         int foreignKey = 100;
+        Date baseDate = new Date();
         
         //Definition of MasterData
         String[] bil = {"A","C",null};
         String[] uom = {"M3","MIN","TO","KG"};
         String[] curr = {"EUR","GBP","US"};
         String[] order = {"01","02","03"};
+        
+        Map<String, Double> convert = new HashMap<>();
+        convert.put("M3TO",2.3);
+        convert.put("M3KG",0.001);
+        convert.put("MINTO",0.000001);
+        convert.put("MINKG",0.001);
+        convert.put("TOTO",1.0);
+        convert.put("TOKG",1000.0);
+        convert.put("KGTO",0.001);
+        convert.put("KGKG",1.0);
         
         Map<String, Double> prio = new HashMap<>();
         prio.put("0", 0.705);
@@ -48,12 +59,13 @@ public class SchemaVAITM extends Schemas {
         prio.put("3", 0.996);
         prio.put("11", 1.0);
         
+        this.setCurrentRow();
         if(this.getCurrentRow() == 1) {
             this.setForeignKey(foreignKey++);
             this.setPrimaryKey(this.getDefaultPrimaryKey());
+            baseDate = dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31)); //Created on
         }
-        
-        this.setCurrentRow();
+  
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
@@ -89,37 +101,29 @@ public class SchemaVAITM extends Schemas {
         }
         
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getCurrency(6149.3250, 39806.9660),0.05,dg.getCurrency(-182.1036, 146.5462))); //Net value
-//        if(this.getRowCount() > 1) {
-//            Double val = dg.getCurrency(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]));
-//            Double parentVal = Double.parseDouble(this.getParentSchema("VAHDR").getMapItem("Net value").toString());
-//            Double sum = 0d;
-//            for(Object d : this.getMasterData("Net value").toArray()) {
-//                sum = sum + Double.parseDouble(d.toString());
-//            }
-//            if(sum+val > parentVal) {
-//                columns.put(this.getMetaValues("header")[cnt++],parentVal-sum);
-//            } else {
-//                columns.put(this.getMetaValues("header")[cnt++],val);
-//            }
-//            this.setMasterData("Net value", columns.get("Net value"));
-//        } else {
-//            columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAHDR").getMapItem("Net value"));
-//        }
+        this.setMasterData("Net value for Header", columns.get("Net value")); 
+        
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(curr), this.getMetaValues("header")[cnt - 1], 0.05)); //Curr
         columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),1)); //Order Quantity
         columns.put(this.getMetaValues("header")[cnt++],columns.get("Order Quantity")); //Required deliv. qty
         columns.put(this.getMetaValues("header")[cnt++],columns.get("Order Quantity")); //Cumul.confirmed qty
         columns.put(this.getMetaValues("header")[cnt++],columns.get("UoM")); //Su
-        columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),2)); //Gross Weight
+        String WUn = dg.getItem("TO",0.66,"KG");
+        columns.put(this.getMetaValues("header")[cnt++],Double.parseDouble(columns.get("Order Quantity").toString()) * convert.get(columns.get("SU") + WUn)); //Gross Weight
         columns.put(this.getMetaValues("header")[cnt++],columns.get("Gross weight")); //Net Weight
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem("TO",0.66,"KG"),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //WUn
+        columns.put(this.getMetaValues("header")[cnt++],WUn); //WUn
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem("X",0.33,null)); //U
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem("B",0.29,null)); //ComRI
         columns.put(this.getMetaValues("header")[cnt++],dg.getRange(prio)); //Prio
         columns.put(this.getMetaValues("header")[cnt++],columns.get("BusA")); //PInt
         columns.put(this.getMetaValues("header")[cnt++],columns.get("BusA")); //ShpT
         columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("Route", cnt-1, this.getCurrentRow(), "GB" + this.fillString(dg.getNumberUpTo(9999).toString(), "0", 4))); //Route
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31)),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Created on
+        if(this.getCurrentRow() == 1) {
+            baseDate = dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31)); 
+            columns.put(this.getMetaValues("header")[cnt++],baseDate); //Created on
+        } else {
+            columns.put(this.getMetaValues("header")[cnt++],dg.getDate(baseDate, this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Created on            
+        }
         columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //created by
         columns.put(this.getMetaValues("header")[cnt++],dg.getTime(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Time
         if(columns.get("ComRl") != null && columns.get("ComRl") != "B") {
@@ -197,6 +201,15 @@ public class SchemaVAITM extends Schemas {
         }
         this.setMap(columns);
         
+        //Check if Child has new Parent
+        if(dg.getItem(1,0.3,0) == 1){
+            this.setForeignKey(foreignKey++);
+            this.setNextForeignKeyCheck(true);
+            this.dropMasterData("Net value for Header");
+        } else {
+            this.setNextForeignKeyCheck(false);
+        }
+
         if(this.getRowCount() == this.getCurrentRow()) {
             this.dropMasterData("Net value");
         }
