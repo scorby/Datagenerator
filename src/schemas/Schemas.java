@@ -15,7 +15,6 @@ import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,6 +46,7 @@ public abstract class Schemas {
     private final Map<String, Schemas> parentSchemas = new HashMap<>();
     private Integer rowCount = 1;
     private Integer currentRow = 1;
+    private Integer currentColumn = 0;
     private Integer countFiles = 1;
     public boolean headerWritten = false;
     private boolean bottomTop = false;
@@ -415,6 +415,19 @@ public abstract class Schemas {
     public void setNextForeignKeyCheck(boolean nextForeignKeyCheck) {
         this.nextForeignKeyCheck = nextForeignKeyCheck;
     }
+
+    public Integer getColumnNumber() {
+        return currentColumn;
+    }
+
+    public void setColumnNumber(Integer currentColumn) {
+        this.currentColumn = currentColumn;
+    }
+    
+    public Integer nextColumn() {
+        return this.currentColumn++;
+    }
+    
             
     
     public abstract void setUniqueNumber();

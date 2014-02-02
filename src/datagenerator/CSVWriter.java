@@ -120,8 +120,8 @@ public class CSVWriter {
             //Write Record for Current Schema
             try {
                 this.csvMap = schema.getData();
-            } catch(Exception e) {
-                throw new Exception("Schema: "+ schema.getName() + "\nDescription: " + e.getLocalizedMessage());
+            } catch (Exception e) {
+                throw new Exception("Schema: "+ schema.getName() + "\nDescription: " + e.getLocalizedMessage() + "\nColumn: " + schema.getColumnNumber());
             }
             if(this.csvMap != null) { 
                 try {

@@ -241,7 +241,6 @@ public class FormMain extends javax.swing.JFrame {
         Schemas VCHDR = new SchemaVCHDR();
         Schemas VCITM = new SchemaVCITM();
         
-        VAHDR.setBottomTop(true);
         VDHDR.setBottomTop(true);
         VCHDR.setBottomTop(true);
         
@@ -315,7 +314,7 @@ public class FormMain extends javax.swing.JFrame {
 
             t.start();
             //time.start();
-            writer.createSchemas(VAITM);
+            writer.createSchemas(VAHDR);
             //writer.writeSchemas(schemas.getSchemas());
             success = true;
         }
