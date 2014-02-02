@@ -46,7 +46,7 @@ public abstract class Schemas {
     private final Map<String, Schemas> subSchemas = new HashMap<>();
     private final Map<String, Schemas> parentSchemas = new HashMap<>();
     private Integer rowCount = 1;
-    private Integer currentRow = 0;
+    private Integer currentRow = 1;
     private Integer countFiles = 1;
     public boolean headerWritten = false;
     private boolean bottomTop = false;

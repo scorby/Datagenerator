@@ -27,18 +27,17 @@ public class SchemaVCHDR extends Schemas  {
     
     @Override
     public Map<String, Object> getData() throws Exception{
-        if(!this.getSubschema("VDITM").isNextForeignKeyCheck()) {
+        if(!this.getSubschema("VCITM").isNextForeignKeyCheck()) {
             return null;
         }
         
         DataGenerator dg = DataGenerator.getInstance();
         TableData tData = TableData.getInstance();
         
-        this.setCurrentRow();
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("BillDoc"));
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VCITM").getMapItem("Bill Doc"));
         if(this.getSubschema("VCITM").getMapItem("Ret") == "X") {
             columns.put(this.getMetaValues("header")[cnt++],"YI06"); //BillT
             columns.put(this.getMetaValues("header")[cnt++],"L"); //BlCat

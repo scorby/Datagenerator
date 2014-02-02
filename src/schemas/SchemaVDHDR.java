@@ -48,8 +48,6 @@ public class SchemaVDHDR extends Schemas  {
         wbnumber.put("3", 0.7);
         wbnumber.put("11", 1.0);
         
-        this.setPrimaryKey(Integer.parseInt(this.getSubschema("VDITM").getMapItem("BILL_NUM").toString()));
-        
         int cnt = 0;
         
         Map<String, Object> columns = new HashMap<>();   
@@ -91,7 +89,7 @@ public class SchemaVDHDR extends Schemas  {
         columns.put(this.getMetaValues("header")[cnt++],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[cnt-1]), this.parseDouble(this.getMetaValues("change")[cnt-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[cnt - 1]),Integer.MAX_VALUE)); //changed on
         columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //changed on
         columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("CCAr")); //CCAr
-        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Cred. acct")); //cred acct.
+        columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Cred acct")); //cred acct.
         columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Cred")); //Cred
         columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Credrepgrp")); //Credrepgrp
         columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VDITM").getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("Risk category")); //Risk category

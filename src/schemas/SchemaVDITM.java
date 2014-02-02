@@ -46,8 +46,7 @@ public class SchemaVDITM extends Schemas {
         convert.put("TOKG",1000.0);
         convert.put("KGTO",0.001);
         convert.put("KGKG",1.0);
-        
-        this.setCurrentRow();
+
         if(this.getCurrentRow() == 1) {
             this.setPrimaryKey(this.getDefaultPrimaryKey());
             this.setGrossWeight(0d, false);
@@ -113,7 +112,6 @@ public class SchemaVDITM extends Schemas {
         columns.put(this.getMetaValues("header")[cnt++],null); //U
         columns.put(this.getMetaValues("header")[cnt++],null); //PckID
         columns.put(this.getMetaValues("header")[cnt++],null); //MvT
-        columns.put(this.getMetaValues("header")[cnt++],null); //MTy
         columns.put(this.getMetaValues("header")[cnt++],null); //RqTy
         columns.put(this.getMetaValues("header")[cnt++],null); //PlTyp
         columns.put(this.getMetaValues("header")[cnt++],null); //MTyp
@@ -154,7 +152,7 @@ public class SchemaVDITM extends Schemas {
             }
             this.setMasterData("Net price", columns.get("Net price")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net price").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Net price")));
         }
         if(this.getRowCount() > 1) {
@@ -171,7 +169,7 @@ public class SchemaVDITM extends Schemas {
             }
             this.setMasterData("Net value", columns.get("Net value")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net value").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Net value")));
         }
         this.setMasterData("Net value for Header", columns.get("Net value")); 

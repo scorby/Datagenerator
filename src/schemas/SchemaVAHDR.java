@@ -100,8 +100,8 @@ public class SchemaVAHDR extends Schemas  {
         }
         columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("ordrs", cnt-1, this.getCurrentRow(), dg.getItem("B0" + dg.getNumberUpTo(9).toString(),0.7,null))); //OrdRs
         Double sum = 0d;
-        for(Object d : this.getSubschema("VAITM").getMasterData("Net value for Header").toArray()) {
-            sum = sum + Double.parseDouble(d.toString()); //Net valeue
+        for(Object d : this.getSubschema("VAITM").getMasterData("Net value").toArray()) {
+            sum = sum + Double.parseDouble(d.toString()); //Net value
         }
         columns.put(this.getMetaValues("header")[cnt++],sum); //Net value
         columns.put(this.getMetaValues("header")[cnt++],this.getSubschema("VAITM").getMapItem("Curr.")); //Curr
@@ -210,10 +210,7 @@ public class SchemaVAHDR extends Schemas  {
 
     @Override
     public Integer getRandomRowCount() {
-        if(this.getSubschema("VAITM").getCurrentRow() == 1) {
-            return 1;
-        }
-        return 0;
+        return 1;
     }
     
     @Override

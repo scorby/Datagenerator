@@ -118,7 +118,11 @@ public class CSVWriter {
             }
             
             //Write Record for Current Schema
-            this.csvMap = schema.getData();
+            try {
+                this.csvMap = schema.getData();
+            } catch(Exception e) {
+                throw new Exception("Schema: "+ schema.getName() + "\nDescription: " + e.getLocalizedMessage());
+            }
             if(this.csvMap != null) { 
                 try {
                     schema.mapWriter.write(this.csvMap, schema.getMetaValues("header"), schema.getProcessors());

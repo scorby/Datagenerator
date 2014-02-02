@@ -59,11 +59,11 @@ public class SchemaVAITM extends Schemas {
         prio.put("3", 0.996);
         prio.put("11", 1.0);
         
-        this.setCurrentRow();
         if(this.getCurrentRow() == 1) {
             this.setForeignKey(foreignKey++);
             this.setPrimaryKey(this.getDefaultPrimaryKey());
             baseDate = dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31)); //Created on
+            this.dropMasterData("Net value");
         }
   
         int cnt = 0;
@@ -91,7 +91,7 @@ public class SchemaVAITM extends Schemas {
         columns.put(this.getMetaValues("header")[cnt++],tData.getMaterial("Customer Material Number", columns.get("Material").toString())); //Customer Material Number
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem(this.getMasterData("Usage", cnt-1, this.getCurrentRow(), "B" + dg.getNumberBetween(10, 99).toString()),0.014,"B0B")); //Usage
         columns.put(this.getMetaValues("header")[cnt++],dg.getNumber(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //Overdel Tol
-        columns.put(this.getMetaValues("header")[cnt++],columns.get("Overdel. Tol.")); //Underdel Tol
+        columns.put(this.getMetaValues("header")[cnt++],columns.get("Overdel Tol")); //Underdel Tol
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberUpTo(9)*10,this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //Dv
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getNumberBetween(1000, 9999),this.getMetaValues("header")[cnt - 1], this.parseDouble(this.getMetaValues("change")[cnt - 1]))); //BusA
         if(this.getCurrentRow() == 1) {
@@ -101,7 +101,7 @@ public class SchemaVAITM extends Schemas {
         }
         
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getCurrency(6149.3250, 39806.9660),0.05,dg.getCurrency(-182.1036, 146.5462))); //Net value
-        this.setMasterData("Net value for Header", columns.get("Net value")); 
+        this.setMasterData("Net value", columns.get("Net value")); 
         
         columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(dg.getItem(curr), this.getMetaValues("header")[cnt - 1], 0.05)); //Curr
         columns.put(this.getMetaValues("header")[cnt++],dg.getDecimal(this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]),1)); //Order Quantity
@@ -175,7 +175,7 @@ public class SchemaVAITM extends Schemas {
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem("A",0.568,null)); //MPr
         columns.put(this.getMetaValues("header")[cnt++],this.getMasterData("PrCat", cnt-1, this.getCurrentRow(), dg.getItem(dg.getRandomChars(1).toUpperCase(),0.6294,null))); //PrCat
         columns.put(this.getMetaValues("header")[cnt++],dg.getItem(dg.getNumberBetween(100000000, 122213206),0.5036,0)); //Cost EastNo
-        if(!"0".equals(columns.get("Cost Est.No.").toString())) {
+        if(!"0".equals(columns.get("Cost Est No").toString())) {
             columns.put(this.getMetaValues("header")[cnt++],"PPC4"); //Costing Variant
         } else {
             columns.put(this.getMetaValues("header")[cnt++],null); //Costing Variant
@@ -200,19 +200,7 @@ public class SchemaVAITM extends Schemas {
             columns.put(this.getMetaValues("header")[cnt++],null);
         }
         this.setMap(columns);
-        
-        //Check if Child has new Parent
-        if(dg.getItem(1,0.3,0) == 1){
-            this.setForeignKey(foreignKey++);
-            this.setNextForeignKeyCheck(true);
-            this.dropMasterData("Net value for Header");
-        } else {
-            this.setNextForeignKeyCheck(false);
-        }
 
-        if(this.getRowCount() == this.getCurrentRow()) {
-            this.dropMasterData("Net value");
-        }
         return columns;
     }
     

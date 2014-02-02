@@ -44,7 +44,6 @@ public class SchemaVCITM extends Schemas {
         convert.put("KGTO",0.001);
         convert.put("KGKG",1.0);
         
-        this.setCurrentRow();
         if(this.getCurrentRow() == 1) {
             this.setPrimaryKey(this.getDefaultPrimaryKey());
             //this.setGrossWeight(0d, false);
@@ -110,7 +109,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Net value", columns.get("Net value")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net value").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Net value")));
         }
         this.setMasterData("Net value for Header", columns.get("Net value")); 
@@ -161,7 +160,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Cost", columns.get("Cost")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Cost").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Cost")));
         }
         if(this.getRowCount() > 1) {
@@ -183,7 +182,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Value of invgross", columns.get("Value of invgross")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Value of invgross").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Value of invgross")));
         }
         if(this.getRowCount() > 1) {
@@ -205,7 +204,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Value w/o freight", columns.get("Value w/o freight")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Value w/o freight").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Value w/o freight")));
         }
         if(this.getRowCount() > 1) {
@@ -227,7 +226,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Value of all bills", columns.get("Value of all bills")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Value of all bills").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Value of all bills")));
         }
         if(this.getRowCount() > 1) {
@@ -249,7 +248,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Freight cost", columns.get("Freight cost")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Freight cost").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Freight cost")));
         }
         if(this.getRowCount() > 1) {
@@ -271,7 +270,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Subtotal 5", columns.get("Subtotal 5")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Subtotal 5").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Subtotal 5")));
         }
         if(this.getRowCount() > 1) {
@@ -293,7 +292,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Bonus paid", columns.get("Bonus paid")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Bonus paid").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Bonus paid")));
         }
         columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getMapItem("Profit Ctr")); //Profit Ctr
@@ -324,7 +323,7 @@ public class SchemaVCITM extends Schemas {
             }
             this.setMasterData("Credit price", columns.get("Credit price")); 
         } else {
-            double m = dg.getNumberBetween(10, 90)/100;
+            double m = dg.getNumberBetween(10, 90)/100.0;
             columns.put(this.getMetaValues("header")[cnt++],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Credit price").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Credit price")));
         }        
         columns.put(this.getMetaValues("header")[cnt++],columns.get("Credit active")); //Credit active
@@ -337,7 +336,6 @@ public class SchemaVCITM extends Schemas {
         } else {
             columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue("RO")); //RO
         }
-        columns.put(this.getMetaValues("header")[cnt++],this.getLastMapValue(columns.get("Ctry") + this.fillString(dg.getNumberUpTo(99).toString(),"0",2),this.getMetaValues("header")[cnt-1],0.85)); //SOOrd
         if(columns.get("Ret") == "X") {
             if(Double.parseDouble(columns.get("Net value").toString()) > 0) {
                 columns.put(this.getMetaValues("header")[cnt++],"K"); //DocCa
@@ -351,8 +349,6 @@ public class SchemaVCITM extends Schemas {
         columns.put(this.getMetaValues("header")[cnt++],this.getParentSchema("VAITM").getParentSchema("VAHDR").getMapItem("OrdRs")); //OrdRs
         columns.put(this.getMetaValues("header")[cnt++],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[cnt-1]), this.parseDouble(this.getMetaValues("std")[cnt-1]))); //TranslDate
 
-        
-        
         this.setMap(columns);
         
         //Check if Child has new Parent
