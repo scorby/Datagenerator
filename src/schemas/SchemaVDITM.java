@@ -179,7 +179,6 @@ public class SchemaVDITM extends Schemas {
         columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Spec. Stk Valuation
         columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Spec.Stock No.
         columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Current quantity
-        columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Qty in OPUn
         columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Sales Value
         columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Credit price
         columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Not relevant for WMS

@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Martin Kleehaus
  */
 public class SchemaVCITM extends Schemas {
-    
+
     private Integer primaryKey = 0;
     private Integer foreignKey = 140500;
     private Integer rowCount = 1;
@@ -113,7 +113,7 @@ public class SchemaVCITM extends Schemas {
             columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getItem(Double.parseDouble(this.getParentSchema("VAITM").getMapItem("Net value").toString())*m,0.247,this.getParentSchema("VAITM").getMapItem("Net value")));
         }
         this.setMasterData("Net value for Header", columns.get("Net value")); 
-        
+        columns.put(this.getMetaValues("header")[this.nextColumn()],this.getParentSchema("VAITM").getMapItem("Curr"));
         if(this.getParentSchema("VAITM").getMapItem("PrCat") == "M") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getItem("K",0.012,"L")); //PrCat
         } else {
