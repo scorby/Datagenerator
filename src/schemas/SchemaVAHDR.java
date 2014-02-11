@@ -70,14 +70,14 @@ public class SchemaVAHDR extends Schemas  {
         columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDateBetween(dg.getDate(2013, 1, 1), dg.getDate(2015,12,31))); //Created on
         columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getTime(this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); //time
         columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getUser(this.parseDouble(this.getMetaValues("sfactor")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("change")[this.getColumnNumber()-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[this.getColumnNumber()-1]),Integer.MAX_VALUE)); //created by
-        if(columns.get("DocCa") == "B") {
-            columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("Created on")); //Valid fr
+        if(columns.get("DOCCA") == "B") {
+            columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("CREATED_ON")); //Valid fr
             columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate(9999, 12, 31)); //Valid to
         } else {
             columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Valid fr
             columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Valid to            
         }
-        columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("Created on")); //Doc Date
+        columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("CREATED_ON")); //Doc Date
 
         docCateg dc = docCateg.valueOf(columns.get("DocCa").toString());
         switch (dc) {
@@ -98,7 +98,7 @@ public class SchemaVAHDR extends Schemas  {
                 columns.put(this.getMetaValues("header")[this.nextColumn()],"YI04"); //SaTy
                 break;     
         }
-        columns.put(this.getMetaValues("header")[this.nextColumn()],this.getMasterData("ordrs", this.getColumnNumber()-1, this.getCurrentRow(), dg.getItem("B0" + dg.getNumberUpTo(9).toString(),0.7,null))); //OrdRs
+        columns.put(this.getMetaValues("header")[this.nextColumn()],this.getMasterData("ORDRS", this.getColumnNumber()-1, this.getCurrentRow(), dg.getItem("B0" + dg.getNumberUpTo(9).toString(),0.7,null))); //OrdRs
         //Double sum = 0d;
 //        for(Object d : this.getSubschema("VAITM").getMasterData("Net value").toArray()) {
 //            sum = sum + Double.parseDouble(d.toString()); //Net value
@@ -112,68 +112,67 @@ public class SchemaVAHDR extends Schemas  {
         columns.put(this.getMetaValues("header")[this.nextColumn()],this.getLastMapValue(dg.getNumberUpTo(9)*10,this.getMetaValues("header")[this.getColumnNumber()-1], this.parseDouble(this.getMetaValues("change")[this.getColumnNumber()-1]))); //Sgrp
         columns.put(this.getMetaValues("header")[this.nextColumn()],this.getLastMapValue(dg.getNumberUpTo(9)*10,this.getMetaValues("header")[this.getColumnNumber()-1], this.parseDouble(this.getMetaValues("change")[this.getColumnNumber()-1]))); //Soff
         columns.put(this.getMetaValues("header")[this.nextColumn()],"00" + dg.getNumberBetween(20000000, 29999999).toString()); //Doccond
-        columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); // Req.dlv.dt
-        columns.put(this.getMetaValues("header")[this.nextColumn()], "1"); //
-        if (columns.get("DocCa") == "C") {
+        columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate((Date)columns.get("CREATED_ON"), this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); // Req.dlv.dt
+        if (columns.get("DOCCA") == "C") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"F"); //I
-        } else if (columns.get("DocCa") == "L") {
+        } else if (columns.get("DOCCA") == "L") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"D"); //I
         } else {
             columns.put(this.getMetaValues("header")[this.nextColumn()],null); //I
         }
         columns.put(this.getMetaValues("header")[this.nextColumn()], "ZGB100"); //PriPbr
         columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getRange(sc)); //SC
-        if (columns.get("DocCa") == "B") {
+        if (columns.get("DOCCA") == "B") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"F5"); //OrBit
-        } else if (columns.get("DocCa") == "K") {
+        } else if (columns.get("DOCCA") == "K") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"YK03"); //OrBit
-        } else if (columns.get("DocCa") == "L") {
+        } else if (columns.get("DOCCA") == "L") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"YD03"); //OrBit
         } else {
             columns.put(this.getMetaValues("header")[this.nextColumn()],null); //OrBit
         }
         //columns.put(this.getMetaValues("header")[this.nextColumn()],this.getSubschema("VAITM").getMapItem("Prb")); //Prb
         columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getItem(dg.getNumberUpTo(9)*10,0.34,100)); //Prb
-        if ("100".equals(columns.get("Prb").toString())) {
+        if ("100".equals(columns.get("PRB").toString())) {
             columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getRandomChars(2, 10) + "/" + dg.getNumberUpTo(10000).toString()); //Order number
         }else {
             columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getItem(dg.getRandomChars(2, 10) + "/" + dg.getNumberUpTo(10000).toString(),0.10,null)); //Order number
         }
-        if ("100".equals(columns.get("Prb").toString())) {
-            columns.put(this.getMetaValues("header")[this.nextColumn()],this.getMasterData("potyp", this.getColumnNumber()-1, this.getCurrentRow(), dg.getItem(dg.getRandomChars(4).toUpperCase(),0.60,null))); //potyp
+        if ("100".equals(columns.get("PRB").toString())) {
+            columns.put(this.getMetaValues("header")[this.nextColumn()],this.getMasterData("POTYP", this.getColumnNumber()-1, this.getCurrentRow(), dg.getItem(dg.getRandomChars(4).toUpperCase(),0.60,null))); //potyp
         } else {
              columns.put(this.getMetaValues("header")[this.nextColumn()],null); //potyp
         }
-        columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("Created on")); //PO Date
+        columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("CREATED_ON")); //PO Date
         columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto(this.parseDouble(this.getMetaValues("sfactor")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("change")[this.getColumnNumber()-1]), this.getCurrentRow(),this.getLastMapValue(this.getMetaValues("header")[this.getColumnNumber()-1]),Integer.MAX_VALUE)); //Sold-to pt
         columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getItem(dg.getLastName(),0.90,null)); //Name of the orderer
-        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("telephone", columns.get("Sold-to pt").toString()));
-        columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("Created on")); //Last cont
-        columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); //changed on
+        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("TELEPHONE", columns.get("SOLD_TO_PT").toString()));
+        columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("CREATED_ON")); //Last cont
+        columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate((Date)columns.get("CREATED_ON"), this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); //changed on
         columns.put(this.getMetaValues("header")[this.nextColumn()],this.getLastMapValue("GB" + dg.getNumberUpTo(9) + "0",this.getMetaValues("header")[this.getColumnNumber()-1],0.5)); //COAr
         columns.put(this.getMetaValues("header")[this.nextColumn()],"GB00"); //CAr
-        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("Cred acct", columns.get("Sold-to pt").toString())); //Cred acct
-        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("Cred", columns.get("Sold-to pt").toString())); //Cred
-        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("Credrepgrp", columns.get("Sold-to pt").toString())); //Cred.rep.grp
+        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("CRED_ACCT", columns.get("SOLD_TO_PT").toString())); //Cred acct
+        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("CRED", columns.get("SOLD_TO_PT").toString())); //Cred
+        columns.put(this.getMetaValues("header")[this.nextColumn()],tData.getSoldto("CREDREPGRP", columns.get("SOLD_TO_PT").toString())); //Cred.rep.grp
         columns.put(this.getMetaValues("header")[this.nextColumn()],this.getLastMapValue(dg.getItem(risk),this.getMetaValues("header")[this.getColumnNumber()-1],this.parseDouble(this.getMetaValues("change")[this.getColumnNumber()-1]))); //risk
-        if ("100".equals(columns.get("Prb").toString())) {
+        if ("100".equals(columns.get("PRB").toString())) {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"A"); //HPr
         }else {
             columns.put(this.getMetaValues("header")[this.nextColumn()],null); //HPr
         }
-        if (columns.get("DocCa") == "C") {
+        if (columns.get("DOCCA") == "C") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],null); //Usage
-        } else if (columns.get("DocCa") == "L") {
+        } else if (columns.get("DOCCA") == "L") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"B0B"); //Usage
-        } else if (columns.get("DocCa") == "K") {
+        } else if (columns.get("DOCCA") == "K") {
             columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getItem("B0B",0.50,"B0E")); //Usage
         } else {
             columns.put(this.getMetaValues("header")[this.nextColumn()],"B" + dg.getNumberBetween(10, 99).toString()); //Usage
         }
-        if (columns.get("DocCa") == "C") {
-            columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate((Date)columns.get("Created on"), this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); //MatAvDt
+        if (columns.get("DOCCA") == "C") {
+            columns.put(this.getMetaValues("header")[this.nextColumn()],dg.getDate((Date)columns.get("CREATED_ON"), this.parseDouble(this.getMetaValues("avg")[this.getColumnNumber()-1]), this.parseDouble(this.getMetaValues("std")[this.getColumnNumber()-1]))); //MatAvDt
         } else {
-            columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("Created on")); //MatAvDt
+            columns.put(this.getMetaValues("header")[this.nextColumn()],columns.get("CREATED_ON")); //MatAvDt
         }
             
         this.setMap(columns);
